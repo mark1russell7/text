@@ -15,3 +15,10 @@ describe("the home page", () => {
     expect(page).toContain('href="https://github.com/mark1russell7/text"');
   });
 });
+
+describe("the demo", () => {
+  it("has a box for the text and an output for each of the four escapes", () => {
+    expect(page).toContain('<textarea id="input"');
+    for (const id of ["out-html", "out-attribute", "out-regexp", "out-markdown"]) expect(page).toContain(`<output id="${id}"`);
+  });
+});

@@ -32,6 +32,15 @@
     <code id="install">pnpm add @mark1russell7/text</code>
     <button id="copy" type="button">Copy</button>
   </div>
+  <h2>Try the escapes</h2>
+  <label class="field" for="input">Your text</label>
+  <textarea id="input" rows="3" spellcheck="false">Tom &amp; Jerry say "hi" | *1+1=2?*</textarea>
+  <dl class="outputs">
+    <dt><code>escapeHtml</code></dt><dd><output id="out-html" for="input"></output></dd>
+    <dt><code>escapeAttribute</code></dt><dd><output id="out-attribute" for="input"></output></dd>
+    <dt><code>escapeRegExp</code></dt><dd><output id="out-regexp" for="input"></output></dd>
+    <dt><code>escapeMarkdown</code></dt><dd><output id="out-markdown" for="input"></output></dd>
+  </dl>
   <p class="note">This package has no release on npm yet. <a href="./releases/">Releases</a> shows each version, and <a href="./status/">Status</a> shows the open work.</p>
 </main>
 
