@@ -8,7 +8,7 @@ PATCH: new exports before 1.0. The escapes of a GitHub Actions workflow command:
 - The 5 copies of the atlas list with these escapes are test fixtures. Each gives the output of its home function, with no difference.
 - The root entry is 321 bytes after `esbuild` and `gzip` at level 9, in place of 250. The limit of the test stays at 700 bytes.
 
-Runtime dependencies: no change against `0.0.1` (none).
+Runtime dependencies: no change against `0.0.1` (none). The new dev dependency `@vitest/coverage-v8` gives the coverage of the shared CI.
 
 ## 0.0.1
 
