@@ -17,8 +17,8 @@ describe("the home page", () => {
 });
 
 describe("the demo", () => {
-  it("has a box for the text and an output for each of the four escapes", () => {
+  it("has a box for the text and an output for each of the six escapes", () => {
     expect(page).toContain('<textarea id="input"');
-    for (const id of ["out-html", "out-attribute", "out-regexp", "out-markdown"]) expect(page).toContain(`<output id="${id}"`);
+    for (const id of ["out-html", "out-attribute", "out-regexp", "out-markdown", "out-workflow-data", "out-workflow-property"]) expect(page).toContain(`<output id="${id}"`);
   });
 });

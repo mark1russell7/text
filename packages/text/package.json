@@ -1,8 +1,8 @@
 {
   "$schema": "https://json.schemastore.org/package",
   "name": "@mark1russell7/text",
-  "version": "0.0.1",
-  "description": "Plain text helpers. The first group is the escapes: escapeHtml, escapeAttribute, escapeRegExp and escapeMarkdown.",
+  "version": "0.0.2",
+  "description": "Plain text helpers. The first group is the escapes: escapeHtml, escapeAttribute, escapeRegExp, escapeMarkdown, escapeWorkflowData and escapeWorkflowProperty.",
   "keywords": [
     "text",
     "escape",
