@@ -15,3 +15,4 @@ The scope goes by groups of purpose, in this order: the escapes, case conversion
 | X7 | English word forms | P3 | in progress | `countOf` in 0.0.3 gives a count with a noun. Plural forms and lists with "and" are next, with the copies of the atlas as fixtures. |
 | X8 | A word search | P3 | done | `wordSearch` and `searchKey` in 0.0.3. The search folds the case with no rules of a locale, and the tests pin the Unicode cases. |
 | X9 | The removal of secrets | P2 | in progress | `redactSecrets` in 0.0.4, in the entry `@mark1russell7/text/redact`. It removes the raw, URL and HTTP Basic forms of each secret. The API clients of the market are its first users. |
+| X10 | The text of a thrown value | P2 | done | `errorMessage` in 0.0.5 gives the message of an error, also from another realm, and does not throw. |

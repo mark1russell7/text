@@ -1,5 +1,14 @@
 # Changelog of @mark1russell7/text
 
+## 0.0.5
+
+PATCH: a new export before 1.0. The root entry has `errorMessage`, the text of a thrown value.
+
+- `errorMessage` gives the message of an error. It reads the field `message`, so an `Error` from another realm also gives its message.
+- The function does not throw. A value that makes `String` throw gives the tag of `Object.prototype.toString`, and a revoked `Proxy` gives `[object]`.
+
+Runtime dependencies: no change against `0.0.4` (none).
+
 ## 0.0.4
 
 PATCH: a new export before 1.0. The new entry `@mark1russell7/text/redact` has `redactSecrets` and its types `Secret` and `RedactOptions`.
