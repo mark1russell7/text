@@ -16,6 +16,12 @@ escapeWorkflowProperty: build/index.d.ts#escapeWorkflowProperty
 searchKey: build/index.d.ts#searchKey
 wordSearch: build/index.d.ts#wordSearch
 
+## ./redact (build/redact.d.ts): names
+
+RedactOptions: build/redact.d.ts#RedactOptions
+Secret: build/redact.d.ts#Secret
+redactSecrets: build/redact.d.ts#redactSecrets
+
 ## Declarations
 
 ### build/index.d.ts#countOf
@@ -44,3 +50,17 @@ export declare function searchKey(text: string): string;
 
 ### build/index.d.ts#wordSearch
 export declare function wordSearch(query: string): (text: string) => boolean;
+
+### build/redact.d.ts#RedactOptions
+export interface RedactOptions {
+  readonly mark?: string;
+}
+
+### build/redact.d.ts#Secret
+export type Secret = string | {
+  readonly user: string;
+  readonly password: string;
+};
+
+### build/redact.d.ts#redactSecrets
+export declare function redactSecrets(text: string, secrets: readonly Secret[], options?: RedactOptions): string;
