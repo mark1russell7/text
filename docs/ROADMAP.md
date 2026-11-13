@@ -12,4 +12,5 @@ The scope goes by groups of purpose, in this order: the escapes, case conversion
 | X4 | Case conversion | P2 | next | Camel case, kebab case, snake case and title case, with the copies of the atlas as fixtures. |
 | X5 | Padding and truncation | P2 | next | Padding and truncation by code points and by graphemes, with the copies of the atlas as fixtures. |
 | X6 | Templates | P3 | next | The text templates of the copies of the atlas, with the copies as fixtures. |
-| X7 | English word forms | P3 | next | Plural forms and lists with "and", with the copies of the atlas as fixtures. |
+| X7 | English word forms | P3 | in progress | `countOf` in 0.0.3 gives a count with a noun. Plural forms and lists with "and" are next, with the copies of the atlas as fixtures. |
+| X8 | A word search | P3 | done | `wordSearch` and `searchKey` in 0.0.3. The search folds the case with no rules of a locale, and the tests pin the Unicode cases. |

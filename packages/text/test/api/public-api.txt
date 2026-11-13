@@ -6,14 +6,20 @@
 
 ## . (build/index.d.ts): names
 
+countOf: build/index.d.ts#countOf
 escapeAttribute: build/index.d.ts#escapeAttribute
 escapeHtml: build/index.d.ts#escapeHtml
 escapeMarkdown: build/index.d.ts#escapeMarkdown
 escapeRegExp: build/index.d.ts#escapeRegExp
 escapeWorkflowData: build/index.d.ts#escapeWorkflowData
 escapeWorkflowProperty: build/index.d.ts#escapeWorkflowProperty
+searchKey: build/index.d.ts#searchKey
+wordSearch: build/index.d.ts#wordSearch
 
 ## Declarations
+
+### build/index.d.ts#countOf
+export declare function countOf(count: number, noun: string, plural?: string): string;
 
 ### build/index.d.ts#escapeAttribute
 export declare function escapeAttribute(text: string): string;
@@ -32,3 +38,9 @@ export declare function escapeWorkflowData(text: string): string;
 
 ### build/index.d.ts#escapeWorkflowProperty
 export declare function escapeWorkflowProperty(text: string): string;
+
+### build/index.d.ts#searchKey
+export declare function searchKey(text: string): string;
+
+### build/index.d.ts#wordSearch
+export declare function wordSearch(query: string): (text: string) => boolean;
