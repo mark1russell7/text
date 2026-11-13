@@ -6,6 +6,7 @@ describe("the entries", () => {
   it("export the names of the API report", () => {
     expect(Object.keys(entry).sort()).toEqual([
       "countOf",
+      "errorMessage",
       "escapeAttribute",
       "escapeHtml",
       "escapeMarkdown",

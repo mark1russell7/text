@@ -7,6 +7,7 @@
 ## . (build/index.d.ts): names
 
 countOf: build/index.d.ts#countOf
+errorMessage: build/index.d.ts#errorMessage
 escapeAttribute: build/index.d.ts#escapeAttribute
 escapeHtml: build/index.d.ts#escapeHtml
 escapeMarkdown: build/index.d.ts#escapeMarkdown
@@ -26,6 +27,9 @@ redactSecrets: build/redact.d.ts#redactSecrets
 
 ### build/index.d.ts#countOf
 export declare function countOf(count: number, noun: string, plural?: string): string;
+
+### build/index.d.ts#errorMessage
+export declare function errorMessage(error: unknown): string;
 
 ### build/index.d.ts#escapeAttribute
 export declare function escapeAttribute(text: string): string;

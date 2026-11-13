@@ -1,6 +1,6 @@
 # @mark1russell7/text
 
-Plain text helpers in four groups. The groups are the escapes of a text for five targets, the English word forms, a word search and the removal of secrets.
+Plain text helpers in five groups: the escapes of a text for five targets, the English word forms and a word search. The other two groups are the text of a thrown value and the removal of secrets.
 
 ```sh
 pnpm add @mark1russell7/text
@@ -53,6 +53,26 @@ wordSearch("istanbul")("İSTANBUL"); // false: "İ" keeps its dot as U+0307
 searchKey("ﬁle"); // "file"
 ```
 
+## The text of a thrown value
+
+`errorMessage(error)` gives the text of a thrown value, for a log line or a message on a screen. It does not throw.
+
+```ts
+import { errorMessage } from "@mark1russell7/text";
+
+errorMessage(new Error("boom")); // "boom"
+errorMessage("timeout"); // "timeout"
+errorMessage(Object.create(null)); // "[object Object]"
+```
+
+| Value | Text |
+| --- | --- |
+| An object with a `message` text, also an `Error` from a `vm` context or an `iframe` | The message |
+| An `Error` of any realm with a `message` that is not a text | `String(message)` |
+| Each other value | `String(value)` |
+| A value that makes `String` throw | The tag of `Object.prototype.toString`, for example `[object Object]` |
+| A revoked `Proxy` | `[object]` |
+
 ## The removal of secrets
 
 `redactSecrets(text, secrets, options?)` puts a mark in place of each secret in a text. Use it on an error message or a log line before it goes out. The function is in the entry `@mark1russell7/text/redact`, so the root entry stays small.
@@ -91,4 +111,5 @@ The tests run 58 copies of these functions from other repositories of the owner.
 - `escapeMarkdown` does not change spaces. Four spaces at the start of a line make a code block.
 - `wordSearch` keeps accents, so "cafe" does not find "café".
 - `countOf` knows no irregular plural. Give the plural noun for each noun that does not add "s".
+- `errorMessage` gives only the message. It does not add the name of the error, its `cause` or its stack.
 - `redactSecrets` removes only the forms in its table. A secret in a JSON string with escapes, or in a different encoding, stays.
