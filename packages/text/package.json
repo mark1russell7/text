@@ -1,14 +1,16 @@
 {
   "$schema": "https://json.schemastore.org/package",
   "name": "@mark1russell7/text",
-  "version": "0.0.2",
-  "description": "Plain text helpers. The first group is the escapes: escapeHtml, escapeAttribute, escapeRegExp, escapeMarkdown, escapeWorkflowData and escapeWorkflowProperty.",
+  "version": "0.0.3",
+  "description": "Plain text helpers: the escapes for HTML, attributes, patterns, Markdown and workflow commands, English word forms (countOf) and a word search (wordSearch).",
   "keywords": [
     "text",
     "escape",
     "html",
     "regexp",
     "markdown",
+    "search",
+    "plural",
     "typescript"
   ],
   "homepage": "https://github.com/mark1russell7/text#readme",
