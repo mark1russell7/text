@@ -1,8 +1,8 @@
 {
   "$schema": "https://json.schemastore.org/package",
   "name": "@mark1russell7/text",
-  "version": "0.0.3",
-  "description": "Plain text helpers: the escapes for HTML, attributes, patterns, Markdown and workflow commands, English word forms (countOf) and a word search (wordSearch).",
+  "version": "0.0.4",
+  "description": "Plain text helpers: the escapes for HTML, attributes, patterns, Markdown and workflow commands, English word forms (countOf), a word search (wordSearch) and the removal of secrets (redactSecrets).",
   "keywords": [
     "text",
     "escape",
@@ -11,6 +11,8 @@
     "markdown",
     "search",
     "plural",
+    "redact",
+    "secrets",
     "typescript"
   ],
   "homepage": "https://github.com/mark1russell7/text#readme",
@@ -30,6 +32,7 @@
   "types": "./src/index.ts",
   "exports": {
     ".": "./src/index.ts",
+    "./secrets": "./src/secrets.ts",
     "./package.json": "./package.json"
   },
   "files": [
@@ -48,6 +51,10 @@
       ".": {
         "types": "./build/index.d.ts",
         "default": "./build/index.js"
+      },
+      "./secrets": {
+        "types": "./build/secrets.d.ts",
+        "default": "./build/secrets.js"
       },
       "./package.json": "./package.json"
     }

@@ -14,3 +14,4 @@ The scope goes by groups of purpose, in this order: the escapes, case conversion
 | X6 | Templates | P3 | next | The text templates of the copies of the atlas, with the copies as fixtures. |
 | X7 | English word forms | P3 | in progress | `countOf` in 0.0.3 gives a count with a noun. Plural forms and lists with "and" are next, with the copies of the atlas as fixtures. |
 | X8 | A word search | P3 | done | `wordSearch` and `searchKey` in 0.0.3. The search folds the case with no rules of a locale, and the tests pin the Unicode cases. |
+| X9 | The removal of secrets | P2 | in progress | `redactSecrets` in 0.0.4, in the entry `@mark1russell7/text/secrets`. It removes the raw, URL and HTTP Basic forms of each secret. The API clients of the market are its first users. |
