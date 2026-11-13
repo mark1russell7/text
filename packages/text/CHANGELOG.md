@@ -2,10 +2,10 @@
 
 ## 0.0.4
 
-PATCH: a new export before 1.0. The new entry `@mark1russell7/text/secrets` has `redactSecrets` and its types `Secret` and `RedactOptions`.
+PATCH: a new export before 1.0. The new entry `@mark1russell7/text/redact` has `redactSecrets` and its types `Secret` and `RedactOptions`.
 
 - `redactSecrets` puts a mark in place of each secret in a text: the raw form, the forms of `encodeURIComponent` and `URLSearchParams`, and the Base64 form of an HTTP Basic pair.
-- The function is in its own entry, so the root entry stays at 531 bytes. The entry `./secrets` is 705 bytes after `esbuild` and `gzip` at level 9, and a test holds it at 800 bytes or fewer.
+- The function is in its own entry, so the root entry stays at 531 bytes. The entry `./redact` is 705 bytes after `esbuild` and `gzip` at level 9, and a test holds it at 800 bytes or fewer.
 
 Runtime dependencies: no change against `0.0.3` (none).
 

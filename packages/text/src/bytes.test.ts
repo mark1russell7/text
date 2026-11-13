@@ -4,10 +4,10 @@ import { buildSync } from "esbuild";
 import { describe, expect, it } from "vitest";
 
 // The limit of the root entry is the prediction of the first version, made before the code. A change of the limit
-// needs a new prediction. The limit of the entry `./secrets` is 800 bytes. Its first version has 705 bytes.
+// needs a new prediction. The limit of the entry `./redact` is 800 bytes. Its first version has 705 bytes.
 const ENTRIES = [
   { entry: "root", file: "./index.ts", limit: 700 },
-  { entry: "secrets", file: "./secrets.ts", limit: 800 },
+  { entry: "redact", file: "./redact.ts", limit: 800 },
 ] as const;
 
 describe("the bytes of each entry", () => {

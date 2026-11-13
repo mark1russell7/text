@@ -32,7 +32,7 @@
   "types": "./src/index.ts",
   "exports": {
     ".": "./src/index.ts",
-    "./secrets": "./src/secrets.ts",
+    "./redact": "./src/redact.ts",
     "./package.json": "./package.json"
   },
   "files": [
@@ -52,9 +52,9 @@
         "types": "./build/index.d.ts",
         "default": "./build/index.js"
       },
-      "./secrets": {
-        "types": "./build/secrets.d.ts",
-        "default": "./build/secrets.js"
+      "./redact": {
+        "types": "./build/redact.d.ts",
+        "default": "./build/redact.js"
       },
       "./package.json": "./package.json"
     }

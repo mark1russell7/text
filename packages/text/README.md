@@ -55,7 +55,7 @@ searchKey("ﬁle"); // "file"
 
 ## The removal of secrets
 
-`redactSecrets(text, secrets, options?)` puts a mark in place of each secret in a text. Use it on an error message or a log line before it goes out. The function is in the entry `@mark1russell7/text/secrets`, so the root entry stays small.
+`redactSecrets(text, secrets, options?)` puts a mark in place of each secret in a text. Use it on an error message or a log line before it goes out. The function is in the entry `@mark1russell7/text/redact`, so the root entry stays small.
 
 A secret goes into a text in more than one form. The function removes each of these forms:
 
@@ -69,7 +69,7 @@ A secret goes into a text in more than one form. The function removes each of th
 A `Secret` is a string, or a pair `{ user, password }` for HTTP Basic. For a pair, the function removes the password and the Base64 form of the pair. The user stays, because a user name is not a secret. `RedactOptions` has `mark`, the text in place of each secret. The default mark is `[secret]`.
 
 ```ts
-import { redactSecrets, type RedactOptions, type Secret } from "@mark1russell7/text/secrets";
+import { redactSecrets, type RedactOptions, type Secret } from "@mark1russell7/text/redact";
 
 const secrets: Secret[] = ["k/y!", { user: "user", password: "k/y!" }];
 redactSecrets("GET /v1/items?apiKey=k%2Fy!", secrets); // "GET /v1/items?apiKey=[secret]"

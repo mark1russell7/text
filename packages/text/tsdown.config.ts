@@ -2,7 +2,7 @@ import { defineConfig } from "tsdown";
 
 // The build of the package for npm: an ES module for each entry and its declarations in build/. The workspace uses the source.
 export default defineConfig({
-  entry: ["src/index.ts", "src/secrets.ts"],
+  entry: ["src/index.ts", "src/redact.ts"],
   outDir: "build",
   format: "esm",
   platform: "neutral",

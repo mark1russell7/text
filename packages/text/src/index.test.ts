@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import * as entry from "./index.ts";
-import * as secrets from "./secrets.ts";
+import * as redact from "./redact.ts";
 
 describe("the entries", () => {
   it("export the names of the API report", () => {
@@ -15,6 +15,6 @@ describe("the entries", () => {
       "searchKey",
       "wordSearch",
     ]);
-    expect(Object.keys(secrets)).toEqual(["redactSecrets"]);
+    expect(Object.keys(redact)).toEqual(["redactSecrets"]);
   });
 });
