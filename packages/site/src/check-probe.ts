@@ -14,7 +14,7 @@ const chip = (row: string, label: string): HTMLElement | null => $$(`#${row} but
 click(chip("html-chips", "A quote"));
 check(
   "a raw quote and escapeHtml add attributes, and escapeAttribute keeps the title",
-  await until(() => $$("#html-result .verdict.no").length === 2 && text("#html-result").includes("adds the attributes autofocus, onfocus")),
+  await until(() => $$("#html-result .sp-verdict.sp-fail").length === 2 && text("#html-result").includes("adds the attributes autofocus, onfocus")),
   text("#html-result"),
 );
 check("the six escapes show the text", text("#out-attribute").includes("&quot; autofocus"), text("#out-attribute"));

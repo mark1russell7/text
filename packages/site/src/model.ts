@@ -42,19 +42,6 @@ export function findText(find: string, text: string): { raw: Found; escaped: Fou
   return { raw: findAll(find, text), escaped: findAll(escapeRegExp(find), text), literal };
 }
 
-/** This function gives the parts of a text, with a flag on each part that a match covers. */
-export function markParts(text: string, matches: readonly Match[]): { text: string; hit: boolean }[] {
-  const parts: { text: string; hit: boolean }[] = [];
-  let at = 0;
-  for (const match of matches) {
-    if (match.index > at) parts.push({ text: text.slice(at, match.index), hit: false });
-    parts.push({ text: match.text, hit: true });
-    at = match.index + match.text.length;
-  }
-  if (at < text.length) parts.push({ text: text.slice(at), hit: false });
-  return parts;
-}
-
 /** The count of matches as words, for example "1 match" or "3 matches". */
 export function matchCount(count: number): string {
   return countOf(count, "match", "matches");

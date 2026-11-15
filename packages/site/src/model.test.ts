@@ -6,7 +6,6 @@ import {
   findText,
   graphemesOf,
   lengths,
-  markParts,
   readCommand,
   readThrown,
   redactLog,
@@ -29,16 +28,6 @@ describe("the regular expression demo", () => {
     const result = findText("(", "a ( b");
     expect(result.raw.error).toMatch(/group|parenthes/i);
     expect(result.escaped.matches).toEqual([{ index: 2, text: "(" }]);
-  });
-
-  it("marks the parts of a text that the matches cover", () => {
-    expect(markParts("a-b-c", [{ index: 1, text: "-" }, { index: 3, text: "-" }])).toEqual([
-      { text: "a", hit: false },
-      { text: "-", hit: true },
-      { text: "b", hit: false },
-      { text: "-", hit: true },
-      { text: "c", hit: false },
-    ]);
   });
 });
 
