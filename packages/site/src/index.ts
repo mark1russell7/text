@@ -4,6 +4,7 @@
  * @packageDocumentation
  */
 import { byId, copyText, h, setupTheme } from "@mark1russell7/site-pages/chrome";
+import { examples, markedText, partsAt, partsOf, setField, verdict } from "@mark1russell7/site-pages/demo";
 import { countOf, escapeAttribute, escapeHtml, escapeMarkdown, escapeRegExp, escapeWorkflowData, escapeWorkflowProperty } from "@mark1russell7/text";
 import type { TextUnit } from "@mark1russell7/text/length";
 import {
@@ -13,7 +14,6 @@ import {
   findText,
   graphemesOf,
   lengths,
-  markParts,
   matchCount,
   readCommand,
   readThrown,
@@ -33,34 +33,10 @@ copy.addEventListener("click", () => {
   void copyText(copy, byId("install").textContent ?? "");
 });
 
-/** This function fills a row of buttons. A click on a button starts `pick` with its value. */
-function chips(id: string, values: readonly (readonly [label: string, value: string])[], pick: (value: string) => void): void {
-  byId(id).replaceChildren(
-    ...values.map(([label, value]) => {
-      const button = h("button", { type: "button", class: "chip", title: value }, label);
-      button.addEventListener("click", () => pick(value));
-      return button;
-    }),
-  );
-}
-
-/** This function makes the line of one verdict: a mark, a title and a reason. */
-function verdict(ok: boolean, title: string, reason: string | Node): HTMLElement {
-  return h(
-    "div",
-    { class: ok ? "verdict ok" : "verdict no" },
-    h("span", { class: "mark", "aria-hidden": "true" }, ok ? "✓" : "✕"),
-    h("div", {}, h("b", {}, `${title}:`), " ", reason),
-  );
-}
-
-/** This function sets the value of a field and sends an `input` event. */
-function setField(field: HTMLInputElement | HTMLTextAreaElement, value: string): void {
-  field.value = value;
-  field.dispatchEvent(new Event("input"));
-}
-
-/** This function makes a group of radio buttons from the buttons with an attribute, and gives the value of each pick. */
+/**
+ * This function makes a group of radio buttons from the buttons with an attribute, and gives the value of each pick.
+ * The `Segmented` part of `@mark1russell7/site-pages/chrome` replaces it when that part is on npm.
+ */
 function radios(attribute: string, start: string, pick: (value: string) => void): void {
   const buttons = [...document.querySelectorAll<HTMLButtonElement>(`[${attribute}]`)];
   const select = (value: string): void => {
@@ -69,21 +45,6 @@ function radios(attribute: string, start: string, pick: (value: string) => void)
   };
   for (const button of buttons) button.addEventListener("click", () => select(button.getAttribute(attribute) ?? start));
   select(start);
-}
-
-/** This function shows a text in a box, with a `mark` element on each part that a test finds. */
-function marked(text: string, parts: readonly { text: string; hit: boolean }[], label: string): HTMLElement {
-  return h("pre", { class: "body", "aria-label": label }, ...(text === "" ? ["(empty)"] : parts.map((part) => (part.hit ? h("mark", {}, part.text) : part.text))));
-}
-
-/** This function shows a text with a `mark` element on each copy of a mark text. */
-function withMarks(text: string, mark: string, label: string): HTMLElement {
-  const pieces = text.split(mark);
-  return marked(
-    text,
-    pieces.flatMap((piece, index) => (index === 0 ? [{ text: piece, hit: false }] : [{ text: mark, hit: true }, { text: piece, hit: false }])),
-    label,
-  );
 }
 
 // 1. HTML
@@ -149,18 +110,18 @@ function showHtml(): void {
       const attribute = inAttribute(version(text), text);
       return h(
         "div",
-        { class: "card" },
+        { class: "sp-card" },
         h("h3", {}, name === "The raw text" ? name : h("code", {}, name)),
-        verdict(content.ok, "In an element", content.reason),
-        verdict(attribute.ok, "In an attribute", attribute.reason),
+        verdict(content.ok, "In an element:", content.reason),
+        verdict(attribute.ok, "In an attribute:", attribute.reason),
       );
     }),
   );
   for (const [id, escape] of ESCAPES) byId(id).textContent = escape(text);
 }
 htmlInput.addEventListener("input", showHtml);
-chips(
-  "html-chips",
+examples(
+  byId("html-chips"),
   [
     ["A tag", 'Tom & Jerry say <b>"hi"</b>'],
     ["An element with a handler", "<svg onload=alert(1)>"],
@@ -189,10 +150,10 @@ function foundBlock(title: string, found: Found, find: string, text: string, lit
         : `It finds ${matchCount(found.matches.length)}${listed === "" ? "" : `: ${listed}`}. Your text is there ${countOf(literal, "time")}.`;
   return h(
     "div",
-    { class: "card" },
+    { class: "sp-card" },
     h("h3", {}, title, " ", h("code", {}, `/${found.pattern}/g`)),
-    verdict(exact, exact ? "Correct" : "Wrong", reason),
-    found.error === undefined ? marked(text, markParts(text, found.matches), `The matches of ${title}`) : "",
+    verdict(exact, exact ? "Correct:" : "Wrong:", reason),
+    found.error === undefined ? markedText(partsAt(text, found.matches.map((match) => [match.index, match.index + match.text.length] as const)), `The matches of ${title}`) : "",
   );
 }
 function showFind(): void {
@@ -206,8 +167,8 @@ function showFind(): void {
 }
 findInput.addEventListener("input", showFind);
 findIn.addEventListener("input", showFind);
-chips(
-  "find-chips",
+examples(
+  byId("find-chips"),
   [
     ["1+1=2?", "1+1=2?"],
     ["(USD)", "(USD)"],
@@ -237,10 +198,10 @@ function commandBlock(name: string, command: string, title: string, message: str
   rows.push(["The message", reading.message === "" ? "(none)" : reading.message]);
   return h(
     "div",
-    { class: "card" },
+    { class: "sp-card" },
     h("h3", {}, name),
-    h("pre", { class: "body", "aria-label": `The command, ${name}` }, command),
-    verdict(ok, ok ? "The runner reads your text" : "The runner reads another text", ok ? "The title and the message come back as you typed them." : "The title, the properties or the message changed."),
+    h("pre", { class: "sp-text", "aria-label": `The command, ${name}` }, command),
+    verdict(ok, ok ? "The runner reads your text:" : "The runner reads another text:", ok ? "The title and the message come back as you typed them." : "The title, the properties or the message changed."),
     h("dl", { class: "reading" }, ...rows.flatMap(([term, value]) => [h("dt", {}, term), h("dd", {}, value)])),
   );
 }
@@ -294,9 +255,9 @@ function showCut(): void {
   const cut = cutText(text, max, unit);
   byId("cut-result").replaceChildren(
     h("div", { class: "line" }, h("code", {}, `slice(0, ${String(Math.max(0, max - 1))}) + "…"`), quoted(cut.slice, "The cut by slice")),
-    verdict(!cut.sliceBreaks, cut.sliceBreaks ? "Broken" : "Whole", cut.sliceBreaks ? "The cut is inside a grapheme, so the screen shows a broken character." : "Each grapheme is whole."),
+    verdict(!cut.sliceBreaks, cut.sliceBreaks ? "Broken:" : "Whole:", cut.sliceBreaks ? "The cut is inside a grapheme, so the screen shows a broken character." : "Each grapheme is whole."),
     h("div", { class: "line" }, h("code", {}, `truncate(text, ${String(max)}, { unit: "${unit}" })`), quoted(cut.truncated, "The cut by truncate")),
-    verdict(true, "Whole", `Each grapheme is whole. The result has ${countOf(lengths(cut.truncated)[unit], UNIT_NAMES[unit].replace(/s$/, ""), UNIT_NAMES[unit])}.`),
+    verdict(true, "Whole:", `Each grapheme is whole. The result has ${countOf(lengths(cut.truncated)[unit], UNIT_NAMES[unit].replace(/s$/, ""), UNIT_NAMES[unit])}.`),
   );
 }
 function showPad(): void {
@@ -308,14 +269,14 @@ function showPad(): void {
     const method = side === "start" ? "padStart" : "padEnd";
     parts.push(
       h("div", { class: "line" }, h("code", {}, `${method}(${String(width)}, fill)`), quoted(fill.native, `The fill by ${method}`)),
-      verdict(!fill.nativeBreaks, fill.nativeBreaks ? "Broken" : "Whole", fill.nativeBreaks ? "The last copy of the fill ends inside a grapheme." : "Each grapheme of the fill is whole."),
+      verdict(!fill.nativeBreaks, fill.nativeBreaks ? "Broken:" : "Whole:", fill.nativeBreaks ? "The last copy of the fill ends inside a grapheme." : "Each grapheme of the fill is whole."),
     );
   } else {
     parts.push(h("p", { class: "quiet" }, "String has no fill at the two sides."));
   }
   parts.push(
     h("div", { class: "line" }, h("code", {}, `pad(text, ${String(width)}, { unit: "${unit}", side: "${side}" })`), quoted(fill.padded, "The fill by pad")),
-    fill.error === undefined ? verdict(true, "Whole", "Each grapheme of the fill is whole.") : verdict(false, "RangeError", fill.error),
+    fill.error === undefined ? verdict(true, "Whole:", "Each grapheme of the fill is whole.") : verdict(false, "RangeError:", fill.error),
   );
   byId("pad-result").replaceChildren(...parts);
 }
@@ -323,8 +284,8 @@ lenText.addEventListener("input", showLength);
 cutMax.addEventListener("input", showCut);
 padWidth.addEventListener("input", showPad);
 padFill.addEventListener("input", showPad);
-chips(
-  "len-chips",
+examples(
+  byId("len-chips"),
   [
     ["Flags", "🇯🇵🇫🇷🇧🇷 trip"],
     ["A family", "👩‍👩‍👧 family"],
@@ -355,8 +316,8 @@ function showSearch(): void {
   byId("search-list").replaceChildren(...result.rows.map((row) => h("tr", {}, h("td", {}, row.text), cell(row.words), cell(row.plain))));
 }
 searchQuery.addEventListener("input", showSearch);
-chips(
-  "search-chips",
+examples(
+  byId("search-chips"),
   [
     ["strasse", "strasse"],
     ["final", "final"],
@@ -380,11 +341,11 @@ function showSecrets(): void {
   const result = redactLog(secLog.value, secrets());
   byId("sec-result").replaceChildren(
     h("h3", {}, h("code", {}, "redactSecrets(log, [token, { user, password }])")),
-    withMarks(result.redacted, "[secret]", "The log after redactSecrets"),
-    verdict(true, "No secret", "Each form of each secret is gone. The user name stays, because it is not a secret."),
+    markedText(partsOf(result.redacted, "[secret]"), "The log after redactSecrets"),
+    verdict(true, "No secret:", "Each form of each secret is gone. The user name stays, because it is not a secret."),
     h("h3", {}, h("code", {}, "log.replaceAll(token, …).replaceAll(password, …)")),
-    withMarks(result.replaced, LEAK, "The log after replaceAll"),
-    verdict(result.leaks === 0, result.leaks === 0 ? "No secret" : "Leaks", result.leaks === 0 ? "The log has each secret only in its raw form." : `The log still has ${countOf(result.leaks, "form")} of the secrets, marked ${LEAK}.`),
+    markedText(partsOf(result.replaced, LEAK), "The log after replaceAll"),
+    verdict(result.leaks === 0, result.leaks === 0 ? "No secret:" : "Leaks:", result.leaks === 0 ? "The log has each secret only in its raw form." : `The log still has ${countOf(result.leaks, "form")} of the secrets, marked ${LEAK}.`),
   );
 }
 for (const field of [secToken, secUser, secPassword]) {
@@ -412,9 +373,9 @@ function errorOfAnotherWindow(): unknown {
 const THROWN: Record<string, () => unknown> = { ...thrownValues(), "An Error of another window": errorOfAnotherWindow };
 /** This function shows the text of one method. A method is correct when it gives the text of `errorMessage`. */
 function readingRow(code: string, reading: Reading, expected: string): HTMLElement {
-  if (reading.threw) return verdict(false, code, `throws: ${reading.text}`);
+  if (reading.threw) return verdict(false, `${code}:`, `throws: ${reading.text}`);
   const same = reading.text === expected;
-  return verdict(same, code, h("span", {}, "gives ", h("code", {}, JSON.stringify(reading.text)), same ? "" : ", not the message"));
+  return verdict(same, `${code}:`, h("span", {}, "gives ", h("code", {}, JSON.stringify(reading.text)), same ? "" : ", not the message"));
 }
 function showThrown(name: string): void {
   const reading = readThrown(THROWN[name]?.());
@@ -426,8 +387,8 @@ function showThrown(name: string): void {
   );
   for (const button of byId("thrown-chips").children) button.setAttribute("aria-pressed", String(button.textContent === name));
 }
-chips(
-  "thrown-chips",
+examples(
+  byId("thrown-chips"),
   Object.keys(THROWN).map((name) => [name, name] as const),
   showThrown,
 );
