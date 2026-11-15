@@ -1,5 +1,17 @@
 # Changelog of @mark1russell7/text
 
+## 0.0.6
+
+PATCH: a new export before 1.0. The new entry `@mark1russell7/text/length` has `textLength`, `truncate` and `pad`, and their types `TextUnit`, `TextBoundary`, `TruncateOptions` and `PadOptions`.
+
+- Each function counts in UTF-16 code units, in code points or in graphemes. The graphemes come from `Intl.Segmenter`.
+- `truncate` cuts a text to `max` units or fewer, with the mark "…" at the end. The cut keeps each grapheme whole by default, and it never splits a surrogate pair.
+- `pad` adds a fill at the start, at the end or at the two sides, to a width. It does not add a part of a grapheme of the fill.
+- The 18 copies of a cut in the atlas list are test fixtures. `test/cut-differences.ts` gives each difference and its reason.
+- The entry `./length` is 721 bytes after `esbuild` and `gzip` at level 9, and a test holds it at 850 bytes or fewer. The root entry does not change.
+
+Runtime dependencies: no change against `0.0.5` (none).
+
 ## 0.0.5
 
 PATCH: a new export before 1.0. The root entry has `errorMessage`, the text of a thrown value.
