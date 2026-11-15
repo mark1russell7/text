@@ -1,8 +1,8 @@
 {
   "$schema": "https://json.schemastore.org/package",
   "name": "@mark1russell7/text",
-  "version": "0.0.5",
-  "description": "Plain text helpers: the escapes for HTML, attributes, patterns, Markdown and workflow commands, English word forms (countOf), a word search (wordSearch), the text of a thrown value (errorMessage) and the removal of secrets (redactSecrets).",
+  "version": "0.0.6",
+  "description": "Plain text helpers: the escapes for HTML, attributes, patterns, Markdown and workflow commands, English word forms (countOf), a word search (wordSearch), the text of a thrown value (errorMessage), the removal of secrets (redactSecrets), and lengths in code units, code points and graphemes with truncation and padding (textLength, truncate, pad).",
   "keywords": [
     "text",
     "escape",
@@ -14,6 +14,10 @@
     "redact",
     "secrets",
     "error",
+    "truncate",
+    "pad",
+    "grapheme",
+    "unicode",
     "typescript"
   ],
   "homepage": "https://github.com/mark1russell7/text#readme",
@@ -34,6 +38,7 @@
   "exports": {
     ".": "./src/index.ts",
     "./redact": "./src/redact.ts",
+    "./length": "./src/length.ts",
     "./package.json": "./package.json"
   },
   "files": [
@@ -56,6 +61,10 @@
       "./redact": {
         "types": "./build/redact.d.ts",
         "default": "./build/redact.js"
+      },
+      "./length": {
+        "types": "./build/length.d.ts",
+        "default": "./build/length.js"
       },
       "./package.json": "./package.json"
     }

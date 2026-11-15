@@ -23,6 +23,16 @@ RedactOptions: build/redact.d.ts#RedactOptions
 Secret: build/redact.d.ts#Secret
 redactSecrets: build/redact.d.ts#redactSecrets
 
+## ./length (build/length.d.ts): names
+
+PadOptions: build/length.d.ts#PadOptions
+TextBoundary: build/length.d.ts#TextBoundary
+TextUnit: build/length.d.ts#TextUnit
+TruncateOptions: build/length.d.ts#TruncateOptions
+pad: build/length.d.ts#pad
+textLength: build/length.d.ts#textLength
+truncate: build/length.d.ts#truncate
+
 ## Declarations
 
 ### build/index.d.ts#countOf
@@ -54,6 +64,36 @@ export declare function searchKey(text: string): string;
 
 ### build/index.d.ts#wordSearch
 export declare function wordSearch(query: string): (text: string) => boolean;
+
+### build/length.d.ts#PadOptions
+export interface PadOptions {
+  readonly unit?: TextUnit;
+  readonly boundary?: TextBoundary;
+  readonly fill?: string;
+  readonly side?: "start" | "end" | "both";
+}
+
+### build/length.d.ts#TextBoundary
+export type TextBoundary = "code-point" | "grapheme";
+
+### build/length.d.ts#TextUnit
+export type TextUnit = "code-unit" | "code-point" | "grapheme";
+
+### build/length.d.ts#TruncateOptions
+export interface TruncateOptions {
+  readonly unit?: TextUnit;
+  readonly boundary?: TextBoundary;
+  readonly mark?: string;
+}
+
+### build/length.d.ts#pad
+export declare function pad(text: string, width: number, options?: PadOptions): string;
+
+### build/length.d.ts#textLength
+export declare function textLength(text: string, unit?: TextUnit): number;
+
+### build/length.d.ts#truncate
+export declare function truncate(text: string, max: number, options?: TruncateOptions): string;
 
 ### build/redact.d.ts#RedactOptions
 export interface RedactOptions {

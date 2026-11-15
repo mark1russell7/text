@@ -1,6 +1,6 @@
 # @mark1russell7/text
 
-Plain text helpers in five groups: the escapes of a text for five targets, the English word forms and a word search. The other two groups are the text of a thrown value and the removal of secrets.
+Plain text helpers in six groups: the escapes of a text for five targets, the English word forms and a word search. The other three groups are the text of a thrown value, the removal of secrets, and lengths with cuts and padding.
 
 ```sh
 pnpm add @mark1russell7/text
@@ -100,9 +100,55 @@ redactSecrets("token=k/y!", secrets, options); // "token=***"
 
 The function examines the text one time. At each position, it removes the longest form that agrees, so a secret in a secret gives one mark. It ignores an empty secret.
 
+## Lengths, truncation and padding
+
+The entry `@mark1russell7/text/length` has three functions. Each function counts in the unit that you give. The default unit is `code-unit`.
+
+| Unit | One unit | Length of the family emoji 👨‍👩‍👧‍👦 | Length of `e` and U+0301 (é) |
+| --- | --- | --- | --- |
+| `code-unit` | One UTF-16 code unit, as in `String.prototype.length` | 11 | 2 |
+| `code-point` | One Unicode code point. A surrogate pair is one unit | 7 | 2 |
+| `grapheme` | One extended grapheme cluster of `Intl.Segmenter` (UAX #29) | 1 | 1 |
+
+- `textLength(text, unit?)` gives the length of a text in a unit.
+- `truncate(text, max, options?)` cuts a text to `max` units or fewer, with a mark at the end. The default mark is "…".
+- `pad(text, width, options?)` adds a fill at the start, at the end or at the two sides, to `width` units or fewer.
+
+```ts
+import { pad, textLength, truncate } from "@mark1russell7/text/length";
+
+textLength("🇯🇵 ok", "grapheme"); // 4
+truncate("Water main break on Elm Road", 12); // "Water main …"
+truncate(title, 250, { unit: "code-point" }); // 250 code points or fewer, with "…" at the end
+truncate("ab🇯🇵cd", 5); // "ab…": the cut does not break the flag
+truncate("ab🇯🇵cd", 5, { boundary: "code-point" }); // "ab🇯…"
+truncate("hello", 2, { mark: "..." }); // "he": the mark is longer than max, so the result has no mark
+pad("7", 3, { side: "start", fill: "0" }); // "007"
+pad("ab", 7, { fill: "-=" }); // "ab-=-=-"
+pad("ab", 5, { fill: "😀" }); // "ab😀": the emoji has two code units, so one half does not go in
+```
+
+`truncate` obeys these rules:
+
+- A text with `max` units or fewer comes back as it is, with no mark.
+- The cut keeps each grapheme whole by default. With `boundary: "code-point"`, the cut keeps only each surrogate pair whole. The unit `grapheme` always keeps each grapheme whole.
+- The result has `max` units or fewer, with the mark. A grapheme that does not fit goes out, so the result can be shorter than `max`.
+- When the mark has more units than `max`, the result has no mark. It is the start of the text, with `max` units or fewer. Thus `truncate("hello", 0)` gives "".
+- A `max` that is not an integer of 0 or more gives a `RangeError`. A unit or a boundary that is not in its type also gives a `RangeError`.
+
+`pad` obeys these rules:
+
+- A text with `width` units or more comes back as it is. The function does not cut a text.
+- The fill goes again and again from its start, as in `padStart` and `padEnd`. The last copy can be a part of the fill.
+- That part keeps each grapheme whole by default. Thus the result can be shorter than `width`.
+- The side `both` puts the half of the fill at the start and the other half at the end. For an odd count, the end gets one more unit.
+- An empty fill, a bad side and a `width` that is not an integer of 0 or more give a `RangeError`.
+
 ## The copies that this package replaces
 
 The tests run 58 copies of these functions from other repositories of the owner. Each copy comes from a list of the duplication atlas, at a pinned commit. The file `test/copies.json` has each copy, and `test/differences.ts` has each difference from the function of this package, with its reason. A copy that is not in the list gives the same output on each of the 1000 test strings.
+
+The tests also examine 18 copies of a cut with a mark, from a later list of the atlas. The file `test/cut-copies.json` has each copy and the call of `truncate` that replaces it. The file `test/cut-differences.ts` has each difference, with its reason. Most copies cut at a code unit, so they can break a surrogate pair or a grapheme. The atlas has no copy of a padding function. The repositories call `padStart` and `padEnd` directly.
 
 ## Limits
 
@@ -113,3 +159,6 @@ The tests run 58 copies of these functions from other repositories of the owner.
 - `countOf` knows no irregular plural. Give the plural noun for each noun that does not add "s".
 - `errorMessage` gives only the message. It does not add the name of the error, its `cause` or its stack.
 - `redactSecrets` removes only the forms in its table. A secret in a JSON string with escapes, or in a different encoding, stays.
+- `textLength`, `truncate` and `pad` count graphemes with the `Intl.Segmenter` of the runtime. An old runtime can count a new emoji as more than one grapheme.
+- In `pad`, a grapheme of the fill can join the text or the next copy of the fill. A combining mark and a lone regional indicator do this. Then the result has fewer graphemes than the width.
+- The three functions count units, not the width on a screen. A wide character, for example 日, is one unit, as a narrow character is.
