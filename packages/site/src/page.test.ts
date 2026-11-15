@@ -5,7 +5,7 @@ const page = readFileSync(new URL("../index.html", import.meta.url), "utf8");
 
 describe("the home page", () => {
   it("names the package and gives the install command", () => {
-    expect(page).toContain("<title>text</title>");
+    expect(page).toContain("<title>text: plain text helpers, live</title>");
     expect(page).toContain("pnpm add @mark1russell7/text");
   });
 
@@ -14,11 +14,16 @@ describe("the home page", () => {
     expect(page).toContain('href="./status/"');
     expect(page).toContain('href="https://github.com/mark1russell7/text"');
   });
-});
 
-describe("the demo", () => {
-  it("has a box for the text and an output for each of the six escapes", () => {
-    expect(page).toContain('<textarea id="input"');
+  it("has an output for each of the six escapes", () => {
     for (const id of ["out-html", "out-attribute", "out-regexp", "out-markdown", "out-workflow-data", "out-workflow-property"]) expect(page).toContain(`<output id="${id}"`);
+  });
+
+  it("has each element that the script and the probe use", () => {
+    const script = readFileSync(new URL("./index.ts", import.meta.url), "utf8");
+    const probe = readFileSync(new URL("./check-probe.ts", import.meta.url), "utf8");
+    const ids = new Set([...script.matchAll(/byId(?:<[^>]+>)?\("([^"]+)"\)/g), ...probe.matchAll(/"#([a-z-]+)/g)].map((match) => match[1]));
+    for (const id of ids) expect(page, id).toContain(`id="${id}"`);
+    expect(ids.size).toBeGreaterThan(25);
   });
 });

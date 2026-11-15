@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light dark">
-<title>text</title>
-<meta name="description" content="Plain text helpers: escapes for HTML, attributes, regular expressions and Markdown.">
+<title>text: plain text helpers, live</title>
+<meta name="description" content="Escapes for HTML, patterns, Markdown and workflow commands, lengths by grapheme, word search, secret removal and the text of a thrown value. Each demo runs the package.">
 <script>
   // The theme before the first paint: the choice of the visitor, else the theme of the system.
   try { const t = localStorage.getItem("theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch {}
@@ -16,6 +16,7 @@
 <header class="top">
   <a class="brand" href="./">text</a>
   <nav aria-label="Site">
+    <a href="#demos">Demos</a>
     <a href="./releases/">Releases</a>
     <a href="./status/">Status</a>
     <a href="https://github.com/mark1russell7/text">GitHub</a>
@@ -24,26 +25,127 @@
 </header>
 
 <main>
-  <h1>text</h1>
-  <p class="lead">Plain text helpers: escapes for HTML, attributes, regular expressions and Markdown.</p>
+  <h1>Plain text, put in the right place</h1>
+  <p class="lead">A text from a person can break the HTML, the pattern, the log line or the screen that gets it. <code>@mark1russell7/text</code> has a small function for each place. Each demo on this page runs the real functions of the package in your browser.</p>
 
-  <h2>Install</h2>
+  <ul class="doors" id="demos">
+    <li><b>Escapes.</b> HTML, attributes, patterns, Markdown, workflow commands.</li>
+    <li><b>Lengths.</b> Count, cut and pad by grapheme.</li>
+    <li><b>Search.</b> Words in any order, in any case.</li>
+    <li><b>Logs.</b> No secret, and a text for each thrown value.</li>
+  </ul>
+
   <div class="command">
     <code id="install">pnpm add @mark1russell7/text</code>
     <button id="copy" type="button">Copy</button>
   </div>
-  <h2>Try the escapes</h2>
-  <label class="field" for="input">Your text</label>
-  <textarea id="input" rows="3" spellcheck="false">Tom &amp; Jerry say "hi" | *1+1=2?*</textarea>
-  <dl class="outputs">
-    <dt><code>escapeHtml</code></dt><dd><output id="out-html" for="input"></output></dd>
-    <dt><code>escapeAttribute</code></dt><dd><output id="out-attribute" for="input"></output></dd>
-    <dt><code>escapeRegExp</code></dt><dd><output id="out-regexp" for="input"></output></dd>
-    <dt><code>escapeMarkdown</code></dt><dd><output id="out-markdown" for="input"></output></dd>
-    <dt><code>escapeWorkflowData</code></dt><dd><output id="out-workflow-data" for="input"></output></dd>
-    <dt><code>escapeWorkflowProperty</code></dt><dd><output id="out-workflow-property" for="input"></output></dd>
-  </dl>
-  <p class="note">This package has no release on npm yet. <a href="./releases/">Releases</a> shows each version, and <a href="./status/">Status</a> shows the open work.</p>
+
+  <section class="demo" aria-labelledby="html-title">
+    <h2 id="html-title">1. Put a text into HTML</h2>
+    <p>A page puts a name into an element and into an attribute. The browser reads a raw <code>&lt;</code> as a tag and a raw <code>"</code> as the end of the attribute. The demo gives each version to the HTML parser of your browser, with no script, and reads what it made.</p>
+    <label class="field" for="html-input">Your text<textarea id="html-input" rows="2" spellcheck="false">Tom &amp; Jerry say &lt;b&gt;"hi"&lt;/b&gt;</textarea></label>
+    <div class="chips" id="html-chips"></div>
+    <div id="html-result" class="cards" aria-live="polite"></div>
+    <h3>Each escape of your text</h3>
+    <dl class="outputs">
+      <dt><code>escapeHtml</code></dt><dd><output id="out-html" for="html-input"></output></dd>
+      <dt><code>escapeAttribute</code></dt><dd><output id="out-attribute" for="html-input"></output></dd>
+      <dt><code>escapeRegExp</code></dt><dd><output id="out-regexp" for="html-input"></output></dd>
+      <dt><code>escapeMarkdown</code></dt><dd><output id="out-markdown" for="html-input"></output></dd>
+      <dt><code>escapeWorkflowData</code></dt><dd><output id="out-workflow-data" for="html-input"></output></dd>
+      <dt><code>escapeWorkflowProperty</code></dt><dd><output id="out-workflow-property" for="html-input"></output></dd>
+    </dl>
+  </section>
+
+  <section class="demo" aria-labelledby="find-title">
+    <h2 id="find-title">2. Find a text with a regular expression</h2>
+    <p>A search box makes a pattern from the text of a person. In a pattern, <code>+</code>, <code>?</code>, <code>.</code> and <code>(</code> are operators. <code>escapeRegExp</code> makes a pattern that finds only the text.</p>
+    <label class="field" for="find-text">Find this text<input id="find-text" type="text" value="1+1=2?" spellcheck="false" autocomplete="off"></label>
+    <div class="chips" id="find-chips"></div>
+    <label class="field" for="find-in">In this text<textarea id="find-in" rows="4" spellcheck="false">Is 1+1=2? Yes, 1+1=2 holds.
+And 11=2 is false. The price is 5 USD (USD).
+See a.b, a-b and C:\path\to\[x].</textarea></label>
+    <div id="find-result" aria-live="polite"></div>
+  </section>
+
+  <section class="demo" aria-labelledby="wf-title-heading">
+    <h2 id="wf-title-heading">3. Write a warning for GitHub Actions</h2>
+    <p>A step writes <code>::warning title=…::…</code> and the runner shows a warning. A line end ends the command, and a comma or <code>::</code> ends the title. Type a title and a message with these characters.</p>
+    <div class="pair">
+      <label class="field" for="wf-title">The title<input id="wf-title" type="text" value="Build: failed, file=x.txt" spellcheck="false" autocomplete="off"></label>
+      <label class="field" for="wf-message">The message<textarea id="wf-message" rows="2" spellcheck="false">50% of the tests passed.
+Then the job stopped.</textarea></label>
+    </div>
+    <div id="wf-result" class="cards" aria-live="polite"></div>
+  </section>
+
+  <section class="demo" aria-labelledby="len-title">
+    <h2 id="len-title">4. Count, cut and pad by grapheme</h2>
+    <p>A grapheme is one character as a person sees it. A flag, a family emoji or a letter with an accent has more than one code unit. <code>String.prototype.length</code> and <code>slice</code> count code units, so a cut can break a character.</p>
+    <label class="field" for="len-text">Your text<input id="len-text" type="text" value="Café 👩‍👩‍👧 🇯🇵 naïve" spellcheck="false" autocomplete="off"></label>
+    <div class="chips" id="len-chips"></div>
+    <ol class="graphemes" id="len-graphemes" aria-label="The graphemes of the text, with their code units"></ol>
+    <dl class="counts" id="len-counts"></dl>
+    <div class="tabs" role="radiogroup" aria-label="The unit of truncate and pad">
+      <button type="button" role="radio" class="chip" data-unit="code-unit">Code units</button>
+      <button type="button" role="radio" class="chip" data-unit="code-point">Code points</button>
+      <button type="button" role="radio" class="chip" data-unit="grapheme">Graphemes</button>
+    </div>
+    <label class="field" for="cut-max"><span>Cut to <b id="cut-max-value">9</b> units</span><input id="cut-max" type="range" min="0" max="20" value="9"></label>
+    <div id="cut-result" aria-live="polite"></div>
+    <div class="pair">
+      <label class="field" for="pad-width"><span>Pad to <b id="pad-width-value">29</b> units</span><input id="pad-width" type="range" min="0" max="40" value="29"></label>
+      <label class="field" for="pad-fill">The fill<input id="pad-fill" type="text" value="🌟" spellcheck="false" autocomplete="off"></label>
+    </div>
+    <div class="tabs" role="radiogroup" aria-label="The side of the fill">
+      <button type="button" role="radio" class="chip" data-side="start">Start</button>
+      <button type="button" role="radio" class="chip" data-side="end">End</button>
+      <button type="button" role="radio" class="chip" data-side="both">Both</button>
+    </div>
+    <div id="pad-result" aria-live="polite"></div>
+  </section>
+
+  <section class="demo" aria-labelledby="search-title">
+    <h2 id="search-title">5. Search with words</h2>
+    <p><code>wordSearch</code> finds each word of the search in any order. It folds the case as Unicode does, so <code>ß</code> agrees with <code>ss</code>. It also reads a ligature or a full-width letter as the plain letters. The second column is <code>toLowerCase</code> with <code>includes</code>.</p>
+    <label class="field" for="search-query">Search<input id="search-query" type="search" value="strasse" spellcheck="false" autocomplete="off"></label>
+    <div class="chips" id="search-chips"></div>
+    <p class="key">The key of the search: <code id="search-key"></code></p>
+    <table class="results">
+      <thead><tr><th scope="col">Row</th><th scope="col"><code>wordSearch</code> <span id="search-words"></span></th><th scope="col"><code>includes</code> <span id="search-plain"></span></th></tr></thead>
+      <tbody id="search-list"></tbody>
+    </table>
+  </section>
+
+  <section class="demo" aria-labelledby="sec-title">
+    <h2 id="sec-title">6. Remove the secrets from a log</h2>
+    <p>A secret goes into a log in more than one form: raw, encoded in a URL, in the body of a form and in a Basic header. <code>redactSecrets</code> removes each form. <code>replaceAll</code> of the raw secrets leaves the other forms.</p>
+    <div class="pair three">
+      <label class="field" for="sec-token">A token<input id="sec-token" type="text" value="tok+en/1=" spellcheck="false" autocomplete="off"></label>
+      <label class="field" for="sec-user">A user<input id="sec-user" type="text" value="ada" spellcheck="false" autocomplete="off"></label>
+      <label class="field" for="sec-password">The password<input id="sec-password" type="text" value="p@ss w0rd!" spellcheck="false" autocomplete="off"></label>
+    </div>
+    <label class="field" for="sec-log">The log, with the secrets in four forms<textarea id="sec-log" rows="4" spellcheck="false"></textarea></label>
+    <div id="sec-result" aria-live="polite"></div>
+  </section>
+
+  <section class="demo" aria-labelledby="thrown-title">
+    <h2 id="thrown-title">7. The text of a thrown value</h2>
+    <p>A <code>catch</code> gets any value, not only an <code>Error</code>. <code>String(value)</code> throws for some values, and <code>instanceof Error</code> is false for an error of another window. <code>errorMessage</code> gives a text for each value and never throws. Pick a value to throw.</p>
+    <div class="chips" id="thrown-chips"></div>
+    <div id="thrown-result" aria-live="polite"></div>
+  </section>
+
+  <h2>Use it</h2>
+  <pre class="code"><code>import { errorMessage, escapeHtml, wordSearch } from "@mark1russell7/text";
+import { truncate } from "@mark1russell7/text/length";
+import { redactSecrets } from "@mark1russell7/text/redact";
+
+cell.innerHTML = `&lt;b&gt;${escapeHtml(name)}&lt;/b&gt;`;
+const title = truncate(name, 20, { unit: "grapheme" });
+const rows = all.filter(wordSearch(query));
+log(redactSecrets(errorMessage(error), [token]));</code></pre>
+  <p class="note"><a href="./releases/">Releases</a> shows each version, and <a href="./status/">Status</a> shows the open work.</p>
 </main>
 
 <script type="module" src="./src/index.ts"></script>
