@@ -100,6 +100,34 @@ redactSecrets("token=k/y!", secrets, options); // "token=***"
 
 The function examines the text one time. At each position, it removes the longest form that agrees, so a secret in a secret gives one mark. It ignores an empty secret.
 
+### The shapes of tokens
+
+`redactSecrets` needs the secret. A text can also hold a token that you do not know, for example the output of a command in the answer to a form. `findSecretShapes(text, shapes?)` finds the tokens of known services by their shape. Use it to refuse a text before you write it or send it. Each match gives the name of its shape and its span, never the token.
+
+| Shape | What it is |
+| --- | --- |
+| `github-fine-grained` | `github_pat_` and 82 or more characters |
+| `github-classic`, `github-oauth`, `github-app-user`, `github-app-installation`, `github-app-refresh` | `ghp_`, `gho_`, `ghu_`, `ghs_` or `ghr_`, and 36 or more letters and digits |
+| `npm` | `npm_` and 36 or more letters and digits |
+| `anthropic` | `sk-ant-` and 32 or more characters |
+| `aws-access-key` | `AKIA` or `ASIA`, and 16 capital letters and digits |
+| `slack` | `xoxb-`, `xoxp-` and the other `xox` prefixes, and 10 or more characters |
+| `bearer` | `Bearer` and a value of 20 or more characters, as in an `Authorization` header |
+| `private-key` | A `PRIVATE KEY` block, to its end line or to the end of the text |
+
+`SECRET_SHAPES` is the catalog. Each `SecretShape` has `id`, `label` and `pattern`. To find more shapes, give your own list. `redactSecretShapes(text, options?)` puts a mark in place of each match. Matches that overlap give one mark. `RedactShapeOptions` has `mark` and `shapes`.
+
+`findSecretShapesInValue(value, shapes?)` examines each string of a value, for example the body of a JSON document. Each match also gives `path`, the keys and indexes to its string, and `inKey`. Do not examine the JSON text: an escape such as `\n` puts a letter directly before a token at the start of a line, so the token is not a match.
+
+```ts
+import { findSecretShapes, redactSecretShapes } from "@mark1russell7/text/redact";
+
+const answer = "token: " + "ghp_" + "A1b2C3d4E5f6".repeat(3);
+findSecretShapes(answer); // [{ shape: "github-classic", start: 7, end: 47 }]
+redactSecretShapes(answer); // "token: [secret]"
+findSecretShapes("the prefix ghp_ in a sentence"); // []
+```
+
 ## Lengths, truncation and padding
 
 The entry `@mark1russell7/text/length` has three functions. Each function counts in the unit that you give. The default unit is `code-unit`.
@@ -181,6 +209,7 @@ The tests also examine 18 copies of a cut with a mark, from a later list of the 
 - `countOf` knows no irregular plural. Give the plural noun for each noun that does not add "s".
 - `errorMessage` gives only the message. It does not add the name of the error, its `cause` or its stack.
 - `redactSecrets` removes only the forms in its table. A secret in a JSON string with escapes, or in a different encoding, stays.
+- `findSecretShapes` knows only the shapes in its table. A token directly after a letter or a digit is not a match, and a token of a service that is not in the table stays.
 - `textLength`, `truncate` and `pad` count graphemes with the `Intl.Segmenter` of the runtime. An old runtime can count a new emoji as more than one grapheme.
 - In `pad`, a grapheme of the fill can join the text or the next copy of the fill. A combining mark and a lone regional indicator do this. Then the result has fewer graphemes than the width.
 - `partsAt` counts in code units, as `String.prototype.slice` does. A range can cut a surrogate pair or a grapheme.
