@@ -1,5 +1,16 @@
 # Changelog of @mark1russell7/text
 
+## 0.0.7
+
+PATCH: a new export before 1.0. The new entry `@mark1russell7/text/parts` has `partsAt` and `partsOf`, and their type `TextPart`.
+
+- `partsAt` divides a text into parts at ranges of code units. It sorts the ranges, joins the ranges that overlap and clamps each range to the text.
+- `partsOf` divides a text into parts at each copy of a text, from the start, with no overlap.
+- The two functions come from `@mark1russell7/site-pages`, which drops its copies in a later version.
+- The entry `./parts` is 326 bytes after `esbuild` and `gzip` at level 9, and a test holds it at 450 bytes or fewer. The root entry does not change.
+
+Runtime dependencies: no change against `0.0.6` (none).
+
 ## 0.0.6
 
 PATCH: a new export before 1.0. The new entry `@mark1russell7/text/length` has `textLength`, `truncate` and `pad`, and their types `TextUnit`, `TextBoundary`, `TruncateOptions` and `PadOptions`.

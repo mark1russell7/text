@@ -33,6 +33,12 @@ pad: build/length.d.ts#pad
 textLength: build/length.d.ts#textLength
 truncate: build/length.d.ts#truncate
 
+## ./parts (build/parts.d.ts): names
+
+TextPart: build/parts.d.ts#TextPart
+partsAt: build/parts.d.ts#partsAt
+partsOf: build/parts.d.ts#partsOf
+
 ## Declarations
 
 ### build/index.d.ts#countOf
@@ -94,6 +100,18 @@ export declare function textLength(text: string, unit?: TextUnit): number;
 
 ### build/length.d.ts#truncate
 export declare function truncate(text: string, max: number, options?: TruncateOptions): string;
+
+### build/parts.d.ts#TextPart
+export interface TextPart {
+  readonly text: string;
+  readonly hit: boolean;
+}
+
+### build/parts.d.ts#partsAt
+export declare function partsAt(text: string, ranges: readonly (readonly [start: number, end: number])[]): TextPart[];
+
+### build/parts.d.ts#partsOf
+export declare function partsOf(text: string, find: string): TextPart[];
 
 ### build/redact.d.ts#RedactOptions
 export interface RedactOptions {
