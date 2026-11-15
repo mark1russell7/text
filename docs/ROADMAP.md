@@ -16,3 +16,4 @@ The scope goes by groups of purpose, in this order: the escapes, case conversion
 | X8 | A word search | P3 | done | `wordSearch` and `searchKey` in 0.0.3. The search folds the case with no rules of a locale, and the tests pin the Unicode cases. |
 | X9 | The removal of secrets | P2 | in progress | `redactSecrets` in 0.0.4, in the entry `@mark1russell7/text/redact`. It removes the raw, URL and HTTP Basic forms of each secret. The API clients of the market are its first users. |
 | X10 | The text of a thrown value | P2 | done | `errorMessage` in 0.0.5 gives the message of an error, also from another realm, and does not throw. |
+| X11 | The live demo site | P2 | done | The home page of the site runs seven demos of the package in the browser: the HTML parser reads each escape, a pattern finds the text, the runner reads a warning, cuts and padding by grapheme, a word search, the forms of a secret in a log and the text of each thrown value. |
