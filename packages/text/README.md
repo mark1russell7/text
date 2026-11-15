@@ -1,6 +1,6 @@
 # @mark1russell7/text
 
-Plain text helpers in six groups: the escapes of a text for five targets, the English word forms and a word search. The other three groups are the text of a thrown value, the removal of secrets, and lengths with cuts and padding.
+Plain text helpers in seven groups: the escapes of a text for five targets, the English word forms and a word search. The other four groups are the text of a thrown value, the removal of secrets, lengths with cuts and padding, and marked parts.
 
 ```sh
 pnpm add @mark1russell7/text
@@ -144,6 +144,28 @@ pad("ab", 5, { fill: "😀" }); // "ab😀": the emoji has two code units, so on
 - The side `both` puts the half of the fill at the start and the other half at the end. For an odd count, the end gets one more unit.
 - An empty fill, a bad side and a `width` that is not an integer of 0 or more give a `RangeError`.
 
+## Marked parts
+
+The entry `@mark1russell7/text/parts` divides a text into parts. A part with `hit` is in a range or is a copy of a search. A page puts a `mark` element on each part with `hit`.
+
+- `partsAt(text, ranges)` gives the parts at ranges of UTF-16 code units, `[start, end)`. It sorts the ranges, joins the ranges that overlap and clamps each range to the text.
+- `partsOf(text, find)` gives the parts at each copy of `find`, from the start, with no overlap. The comparison is exact.
+
+```ts
+import { partsAt, partsOf } from "@mark1russell7/text/parts";
+
+partsOf("key=[secret] and [secret]", "[secret]");
+// [{ text: "key=", hit: false }, { text: "[secret]", hit: true }, { text: " and ", hit: false }, { text: "[secret]", hit: true }]
+partsAt("And 11=2 is false", [[4, 8]]);
+// [{ text: "And ", hit: false }, { text: "11=2", hit: true }, { text: " is false", hit: false }]
+```
+
+The parts obey these rules:
+
+- The texts of the parts, in their order, make the text again. No part is empty.
+- Two ranges that touch stay two parts. Two ranges that overlap become one part.
+- An empty range, an empty `find` and an empty text give no part with `hit`.
+
 ## The copies that this package replaces
 
 The tests run 58 copies of these functions from other repositories of the owner. Each copy comes from a list of the duplication atlas, at a pinned commit. The file `test/copies.json` has each copy, and `test/differences.ts` has each difference from the function of this package, with its reason. A copy that is not in the list gives the same output on each of the 1000 test strings.
@@ -161,4 +183,5 @@ The tests also examine 18 copies of a cut with a mark, from a later list of the 
 - `redactSecrets` removes only the forms in its table. A secret in a JSON string with escapes, or in a different encoding, stays.
 - `textLength`, `truncate` and `pad` count graphemes with the `Intl.Segmenter` of the runtime. An old runtime can count a new emoji as more than one grapheme.
 - In `pad`, a grapheme of the fill can join the text or the next copy of the fill. A combining mark and a lone regional indicator do this. Then the result has fewer graphemes than the width.
+- `partsAt` counts in code units, as `String.prototype.slice` does. A range can cut a surrogate pair or a grapheme.
 - The three functions count units, not the width on a screen. A wide character, for example 日, is one unit, as a narrow character is.

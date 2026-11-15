@@ -4,9 +4,10 @@
  * @packageDocumentation
  */
 import { byId, copyText, h, setupTheme } from "@mark1russell7/site-pages/chrome";
-import { examples, markedText, partsAt, partsOf, setField, verdict } from "@mark1russell7/site-pages/demo";
+import { examples, markedText, setField, verdict } from "@mark1russell7/site-pages/demo";
 import { countOf, escapeAttribute, escapeHtml, escapeMarkdown, escapeRegExp, escapeWorkflowData, escapeWorkflowProperty } from "@mark1russell7/text";
 import type { TextUnit } from "@mark1russell7/text/length";
+import { partsAt, partsOf } from "@mark1russell7/text/parts";
 import {
   LEAK,
   cutText,
