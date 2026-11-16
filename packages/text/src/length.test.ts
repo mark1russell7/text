@@ -11,6 +11,35 @@ const ACCENT = "é"; // 2, 2, 1
 const JAMO = "각"; // 3, 3, 1
 const UNITS: readonly TextUnit[] = ["code-unit", "code-point", "grapheme"];
 const BOUNDARIES: readonly TextBoundary[] = ["code-point", "grapheme"];
+/** Made-up parts of texts with words: words, white space, punctuation, numbers, a contraction and texts with no spaces. */
+const WORD_PARTS: readonly string[] = [
+  "Elm",
+  "road",
+  "water",
+  "x",
+  "don't",
+  "3.14",
+  "e\u0301t\u00e9",
+  " ",
+  "  ",
+  "\t",
+  "\n",
+  "\r\n",
+  ",",
+  ".",
+  "-",
+  "(",
+  ")",
+  '"',
+  "/",
+  "\u2026",
+  "\u{1F525}",
+  "\u{1F468}\u200D\u{1F469}\u200D\u{1F467}\u200D\u{1F466}",
+  "\u{1F1EF}\u{1F1F5}",
+  "\u65E5\u672C\u8A9E",
+  "\u0E2A\u0E27\u0E31\u0E2A\u0E14\u0E35",
+  "\uD55C\uAD6D\uC5B4",
+];
 const BAD_COUNTS: readonly number[] = [-1, 1.5, Number.NaN, Number.POSITIVE_INFINITY, -0.5, Number.MAX_VALUE * -1];
 
 const lengths = (text: string): number[] => UNITS.map((unit) => textLength(text, unit));
@@ -127,7 +156,92 @@ describe("truncate", () => {
 
   it("stops a unit or a boundary that is not in the type with a RangeError", () => {
     expect(() => truncate("abc", 1, { unit: "word" as TextUnit })).toThrow("unit is word, not code-unit, code-point or grapheme");
-    expect(() => truncate("abc", 1, { boundary: "code-unit" as TextBoundary })).toThrow("boundary is code-unit, not code-point or grapheme");
+    expect(() => truncate("abc", 1, { boundary: "code-unit" as TextBoundary })).toThrow("boundary is code-unit, not code-point, grapheme or word");
+    expect(() => truncate("abc", 1, { boundary: "line" as TextBoundary })).toThrow(RangeError);
+  });
+
+  describe("with the boundary word", () => {
+    it("keeps each word whole, and removes the white space and the punctuation before the mark", () => {
+      expect(truncate("Water main break on Elm Road, avoid the area", 30, { boundary: "word" })).toBe("Water main break on Elm Road…");
+      expect(truncate("Water main break on Elm Road", 11, { boundary: "word" })).toBe("Water main…");
+      expect(truncate("Hello, foo-bar baz", 13, { boundary: "word" })).toBe("Hello, foo…");
+      expect(truncate("Stop. Go now", 9, { boundary: "word", mark: "" })).toBe("Stop. Go");
+      expect(truncate("one two three", 9, { boundary: "word", mark: "..." })).toBe("one...");
+    });
+
+    it("keeps a contraction, a number with a point and a name with a point as one word", () => {
+      expect(truncate("I don't know", 9, { boundary: "word" })).toBe("I don't…");
+      expect(truncate("pi is 3.14159 or so", 14, { boundary: "word" })).toBe("pi is 3.14159…");
+      expect(truncate("see example.com/path now", 13, { boundary: "word" })).toBe("see…");
+    });
+
+    it("keeps an emoji at the end, because an emoji is not punctuation", () => {
+      expect(truncate("Fire \u{1F525} now", 8, { boundary: "word" })).toBe("Fire \u{1F525}…");
+      expect(truncate(`ab ${FAMILY} cd`, 4, { boundary: "word", unit: "grapheme" })).toBe("ab…");
+    });
+
+    it("cuts a text with no spaces at the words of the dictionary of the segmenter", () => {
+      const text = "\u6771\u4EAC\u90FD\u306B\u4F4F\u3093\u3067\u3044\u307E\u3059";
+      const cut = truncate(text, 5, { boundary: "word", unit: "grapheme" });
+      expect(textLength(cut, "grapheme")).toBeLessThanOrEqual(5);
+      expect(cut.endsWith("…")).toBe(true);
+      expect(text.startsWith(cut.slice(0, -1))).toBe(true);
+      expect(cut.length).toBeGreaterThan(1);
+    });
+
+    it("keeps the graphemes that fit when no word fits", () => {
+      expect(truncate("Supercalifragilistic word", 8, { boundary: "word" })).toBe("Superca…");
+      expect(truncate("   Supercalifragilistic", 8, { boundary: "word" })).toBe("   Supe…");
+      expect(truncate("!!!!!!!!!!", 5, { boundary: "word" })).toBe("!!!!…");
+      expect(truncate(FAMILY + FAMILY + FAMILY, 12, { boundary: "word" })).toBe(FAMILY + "…");
+      expect(truncate("word", 0, { boundary: "word" })).toBe("");
+    });
+
+    it("gives back a text that fits as it is, also with white space at its end", () => {
+      expect(truncate("Elm Road ", 9, { boundary: "word" })).toBe("Elm Road ");
+      expect(truncate(FAMILY + " " + FLAG, 3, { boundary: "word", unit: "grapheme" })).toBe(FAMILY + " " + FLAG);
+    });
+
+    it("cuts the spoken text of a call to its code point limit at a word", () => {
+      const said = ("Water main break on Elm Road " + FLAG + ". Avoid the area until 6 PM. ").repeat(30);
+      const cut = truncate(said, 600, { unit: "code-point", boundary: "word", mark: "" });
+      expect(textLength(cut, "code-point")).toBeLessThanOrEqual(600);
+      expect(textLength(cut, "code-point")).toBeGreaterThan(585);
+      expect(said.startsWith(cut)).toBe(true);
+      expect(cut).toMatch(/[\p{L}\p{N}]$/u);
+    });
+
+    describe("on seeded texts with words, in each unit", () => {
+      const texts = textsNear("text/truncate/word", 300, 24, WORD_PARTS);
+      const marks = ["…", "...", "", SMILE];
+
+      for (const unit of UNITS) {
+        it("unit " + unit + ": the longest start at a word end that fits, with no white space or punctuation at its end, or else the grapheme cut", () => {
+          for (const [index, text] of texts.entries()) {
+            const mark = marks[index % marks.length]!;
+            const ends = [...wordEnds(text)].sort((a, b) => a - b);
+            for (const max of [0, 1, 2, 3, 5, 8, 13, 21, 34]) {
+              const result = truncate(text, max, { unit, boundary: "word", mark });
+              const at = JSON.stringify(text) + " max " + max + " mark " + JSON.stringify(mark);
+              expect(textLength(result, unit), at).toBeLessThanOrEqual(max);
+              if (textLength(text, unit) <= max) {
+                expect(result, at).toBe(text);
+                continue;
+              }
+              // The model of the rule, from the word ends of the whole text.
+              const end = textLength(mark, unit) <= max ? mark : "";
+              const room = max - textLength(end, unit);
+              const longest = ends.filter((e) => textLength(text.slice(0, e), unit) <= room).at(-1) ?? 0;
+              const kept = text.slice(0, longest).replace(/[\s\p{P}]+$/u, "");
+              const expected = kept === "" ? truncate(text, max, { unit, boundary: "grapheme", mark }) : kept + end;
+              expect(result, at).toBe(expected);
+              expect(splitsPair(text, result.length - end.length), at).toBe(false);
+              expect(graphemeEnds(text).has(result.length - end.length), at).toBe(true);
+            }
+          }
+        });
+      }
+    });
   });
 
   describe("on seeded texts, in each unit and with each boundary", () => {
@@ -166,6 +280,15 @@ describe("truncate", () => {
     }
   });
 });
+
+let words: Intl.Segmenter | undefined;
+
+/** The word boundaries of a text (UAX #29), as indexes of code units. The set has 0 and the length. */
+function wordEnds(text: string): ReadonlySet<number> {
+  const ends = new Set([0, text.length]);
+  for (const { index } of (words ??= new Intl.Segmenter(undefined, { granularity: "word" })).segment(text)) ends.add(index);
+  return ends;
+}
 
 /** The code point boundaries of a text, as indexes of code units. */
 function codePointEnds(text: string): ReadonlySet<number> {
@@ -210,6 +333,13 @@ describe("pad", () => {
     expect(pad("x", 6, { fill: `a${ACCENT}`, boundary: "code-point" })).toBe(`xa${ACCENT}ae`);
   });
 
+  it("with the boundary word, adds only whole words of the fill", () => {
+    expect(pad("x", 9, { fill: "ab cd", boundary: "word" })).toBe("xab cdab ");
+    expect(pad("x", 8, { fill: "ab cd", boundary: "word" })).toBe("xab cdab");
+    expect(pad("x", 4, { fill: "abc", boundary: "word" })).toBe("xabc");
+    expect(pad("x", 3, { fill: "abc", boundary: "word" })).toBe("x");
+  });
+
   it("pads to a code point width and to a grapheme width", () => {
     expect(pad("ab", 5, { fill: SMILE, unit: "code-point", side: "start" })).toBe(`${SMILE}${SMILE}${SMILE}ab`);
     expect(pad(FLAG, 4, { fill: FLAG_2, unit: "grapheme" })).toBe(FLAG + FLAG_2 + FLAG_2 + FLAG_2);
@@ -223,7 +353,7 @@ describe("pad", () => {
     expect(() => pad("abc", 1, { fill: "" })).toThrow(RangeError);
     expect(() => pad("abc", 5, { side: "middle" as "start" })).toThrow("side is middle, not start, end or both");
     expect(() => pad("abc", 5, { unit: "word" as TextUnit })).toThrow(RangeError);
-    expect(() => pad("abc", 5, { boundary: "word" as TextBoundary })).toThrow(RangeError);
+    expect(() => pad("abc", 5, { boundary: "line" as TextBoundary })).toThrow(RangeError);
   });
 
   describe("on seeded texts, in each unit and with each boundary", () => {
@@ -231,7 +361,7 @@ describe("pad", () => {
     const fills = [" ", "-=", SMILE, FAMILY, `a${ACCENT}`, FLAG, "\u{1F1E6}", "́"];
 
     for (const unit of UNITS) {
-      for (const boundary of BOUNDARIES) {
+      for (const boundary of [...BOUNDARIES, "word"] as const) {
         it(`unit ${unit}, boundary ${boundary}: the text is in the result, with whole parts of the fill, and the result fits in width`, () => {
           for (const [index, text] of texts.entries()) {
             const fill = fills[index % fills.length]!;
@@ -249,7 +379,12 @@ describe("pad", () => {
               const isFill = (added: string): boolean => {
                 const copies = Math.floor(added.length / fill.length);
                 const rest = added.slice(copies * fill.length);
-                const atBoundary = boundary === "grapheme" || unit === "grapheme" ? graphemeEnds(fill).has(rest.length) : !splitsPair(fill, rest.length);
+                const atBoundary =
+                  boundary === "word"
+                    ? wordEnds(fill).has(rest.length)
+                    : boundary === "grapheme" || unit === "grapheme"
+                      ? graphemeEnds(fill).has(rest.length)
+                      : !splitsPair(fill, rest.length);
                 return added.slice(0, copies * fill.length) === fill.repeat(copies) && fill.startsWith(rest) && atBoundary;
               };
               const places =
@@ -260,7 +395,7 @@ describe("pad", () => {
               expect(where, at).toBeDefined();
               if (where === undefined) continue;
               if (side === "both") expect(textLength(result.slice(0, where), unit), at).toBeLessThanOrEqual(Math.floor((width - size) / 2));
-              if (unit !== "grapheme") {
+              if (unit !== "grapheme" && boundary !== "word") {
                 // In code units and code points the fill adds exactly its units, so the result misses at most one part of the fill.
                 const added = textLength(result.slice(0, where), unit) + textLength(result.slice(where + text.length), unit);
                 expect(size + added, at).toBeGreaterThan(width - 2 * textLength(fill, unit));
