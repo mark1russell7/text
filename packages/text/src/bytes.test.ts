@@ -13,10 +13,11 @@ import { describe, expect, it } from "vitest";
 // orders went to the entry `./order`, and the root entry did not change. The limit of `./order` is 400 bytes, predicted
 // before its first measure. The limit of the entry `./html` is 1100 bytes, predicted before its first measure. Version
 // 0.0.11 puts the list join in the entry `./english`, because the root entry has 663 of its 700 bytes. The limit of
-// `./english` is 300 bytes, predicted before its first measure.
+// `./english` is 300 bytes, predicted before its first measure. Version 0.0.12 adds
+// the shapes of a secret by its context to `./redact`. The prediction before the code: at most 2400 bytes.
 const ENTRIES = [
   { entry: "root", file: "./index.ts", limit: 700 },
-  { entry: "redact", file: "./redact.ts", limit: 1900 },
+  { entry: "redact", file: "./redact.ts", limit: 2400 },
   { entry: "length", file: "./length.ts", limit: 850 },
   { entry: "parts", file: "./parts.ts", limit: 450 },
   { entry: "order", file: "./order.ts", limit: 400 },
