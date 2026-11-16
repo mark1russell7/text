@@ -8,7 +8,8 @@ import { describe, expect, it } from "vitest";
 // adds the shapes of tokens and the walk of a value, and the entry has 1692 bytes. That measure came after the code, with
 // no prediction before it. So the limit of `./redact` is 1900 bytes, the measure and 12 %. The limit of
 // the entry `./length` is 850 bytes. Its first version has 721 bytes. The limit of the entry `./parts` is 450 bytes,
-// predicted before the code. Its first version has 326 bytes.
+// predicted before the code. Its first version has 326 bytes. Version 0.0.9 adds the two orders of texts to the root
+// entry. The prediction before the code: the root entry has 650 bytes or fewer, and the limit stays at 700 bytes.
 const ENTRIES = [
   { entry: "root", file: "./index.ts", limit: 700 },
   { entry: "redact", file: "./redact.ts", limit: 1900 },

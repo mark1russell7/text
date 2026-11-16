@@ -53,6 +53,23 @@ wordSearch("istanbul")("İSTANBUL"); // false: "İ" keeps its dot as U+0307
 searchKey("ﬁle"); // "file"
 ```
 
+## The order of texts
+
+The two orders are the same in each locale and in each copy of a program. The name of each function tells its unit.
+
+- `compareCodeUnits(a, b)` compares the UTF-16 code units. The operator `<`, the default sort and canonical JSON (RFC 8785) use this order.
+- `compareCodePoints(a, b)` compares the Unicode code points. A surrogate pair is one code point above U+FFFF.
+
+The two orders are different only for a code point above U+FFFF against a code unit from U+E000 to U+FFFF.
+
+```ts
+import { compareCodePoints, compareCodeUnits } from "@mark1russell7/text";
+
+["b", "a"].sort(compareCodeUnits); // ["a", "b"]
+compareCodeUnits("😀", "～"); // -1: the high surrogate U+D83D is below U+FF5E
+compareCodePoints("😀", "～"); // 1: U+1F600 is above U+FF5E
+```
+
 ## The text of a thrown value
 
 `errorMessage(error)` gives the text of a thrown value, for a log line or a message on a screen. It does not throw.

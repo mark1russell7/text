@@ -1,8 +1,8 @@
 {
   "$schema": "https://json.schemastore.org/package",
   "name": "@mark1russell7/text",
-  "version": "0.0.8",
-  "description": "Plain text helpers: the escapes for HTML, attributes, patterns, Markdown and workflow commands, English word forms (countOf), a word search (wordSearch), the text of a thrown value (errorMessage), the removal of secrets (redactSecrets) and the shapes of tokens (findSecretShapes, redactSecretShapes, findSecretShapesInValue), and lengths in code units, code points and graphemes with truncation and padding (textLength, truncate, pad), and the marked parts of a text (partsAt, partsOf).",
+  "version": "0.0.9",
+  "description": "Plain text helpers: the escapes for HTML, attributes, patterns, Markdown and workflow commands, English word forms (countOf), a word search (wordSearch), the text of a thrown value (errorMessage), the orders of texts by code units and by code points (compareCodeUnits, compareCodePoints), the removal of secrets (redactSecrets) and the shapes of tokens (findSecretShapes, redactSecretShapes, findSecretShapesInValue), and lengths in code units, code points and graphemes with truncation and padding (textLength, truncate, pad), and the marked parts of a text (partsAt, partsOf).",
   "keywords": [
     "text",
     "escape",

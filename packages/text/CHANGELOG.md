@@ -1,5 +1,16 @@
 # Changelog of @mark1russell7/text
 
+## 0.0.9
+
+PATCH: new exports before 1.0. The root entry has two orders of texts: `compareCodeUnits` and `compareCodePoints`.
+
+- `compareCodeUnits` compares the UTF-16 code units, as the operator `<` and the default sort do.
+- `compareCodePoints` compares the Unicode code points. A surrogate pair is one code point, and a lone surrogate is its own code point.
+- A test compares `compareCodePoints` with a reference order for each two texts of 3 code units or fewer, with each pair and each lone surrogate.
+- The six copies of the order of the code units in `mark1russell7/alerts` move to `compareCodeUnits` after this version is on npm.
+
+Runtime dependencies: no change against `0.0.8` (none).
+
 ## 0.0.7
 
 PATCH: a new export before 1.0. The new entry `@mark1russell7/text/parts` has `partsAt` and `partsOf`, and their type `TextPart`.
