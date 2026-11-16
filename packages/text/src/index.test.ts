@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import * as entry from "./index.ts";
+import * as html from "./html.ts";
 import * as length from "./length.ts";
 import * as order from "./order.ts";
 import * as parts from "./parts.ts";
@@ -29,5 +30,6 @@ describe("the entries", () => {
     expect(Object.keys(length).sort()).toEqual(["pad", "textLength", "truncate"]);
     expect(Object.keys(parts).sort()).toEqual(["partsAt", "partsOf"]);
     expect(Object.keys(order).sort()).toEqual(["compareCodePoints", "compareCodeUnits"]);
+    expect(Object.keys(html).sort()).toEqual(["HTML_SKIP", "scanHtml"]);
   });
 });

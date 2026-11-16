@@ -11,13 +11,14 @@ import { describe, expect, it } from "vitest";
 // predicted before the code. Its first version has 326 bytes. Version 0.0.9 first added the two orders of texts to the
 // root entry, with the prediction of 650 bytes or fewer. The prediction failed: the root entry had 867 bytes in CI. So the
 // orders went to the entry `./order`, and the root entry did not change. The limit of `./order` is 400 bytes, predicted
-// before its first measure.
+// before its first measure. The limit of the entry `./html` is 1100 bytes, predicted before its first measure.
 const ENTRIES = [
   { entry: "root", file: "./index.ts", limit: 700 },
   { entry: "redact", file: "./redact.ts", limit: 1900 },
   { entry: "length", file: "./length.ts", limit: 850 },
   { entry: "parts", file: "./parts.ts", limit: 450 },
   { entry: "order", file: "./order.ts", limit: 400 },
+  { entry: "html", file: "./html.ts", limit: 1100 },
 ] as const;
 
 describe("the bytes of each entry", () => {
