@@ -20,7 +20,15 @@ wordSearch: build/index.d.ts#wordSearch
 ## ./redact (build/redact.d.ts): names
 
 RedactOptions: build/redact.d.ts#RedactOptions
+RedactShapeOptions: build/redact.d.ts#RedactShapeOptions
+SECRET_SHAPES: build/redact.d.ts#SECRET_SHAPES
 Secret: build/redact.d.ts#Secret
+SecretShape: build/redact.d.ts#SecretShape
+SecretShapeMatch: build/redact.d.ts#SecretShapeMatch
+ValueShapeMatch: build/redact.d.ts#ValueShapeMatch
+findSecretShapes: build/redact.d.ts#findSecretShapes
+findSecretShapesInValue: build/redact.d.ts#findSecretShapesInValue
+redactSecretShapes: build/redact.d.ts#redactSecretShapes
 redactSecrets: build/redact.d.ts#redactSecrets
 
 ## ./length (build/length.d.ts): names
@@ -118,11 +126,48 @@ export interface RedactOptions {
   readonly mark?: string;
 }
 
+### build/redact.d.ts#RedactShapeOptions
+export interface RedactShapeOptions extends RedactOptions {
+  readonly shapes?: readonly SecretShape[];
+}
+
+### build/redact.d.ts#SECRET_SHAPES
+export declare const SECRET_SHAPES: readonly SecretShape[];
+
 ### build/redact.d.ts#Secret
 export type Secret = string | {
   readonly user: string;
   readonly password: string;
 };
+
+### build/redact.d.ts#SecretShape
+export interface SecretShape {
+  readonly id: string;
+  readonly label: string;
+  readonly pattern: RegExp;
+}
+
+### build/redact.d.ts#SecretShapeMatch
+export interface SecretShapeMatch {
+  readonly shape: string;
+  readonly start: number;
+  readonly end: number;
+}
+
+### build/redact.d.ts#ValueShapeMatch
+export interface ValueShapeMatch extends SecretShapeMatch {
+  readonly path: readonly (string | number)[];
+  readonly inKey: boolean;
+}
+
+### build/redact.d.ts#findSecretShapes
+export declare function findSecretShapes(text: string, shapes?: readonly SecretShape[]): SecretShapeMatch[];
+
+### build/redact.d.ts#findSecretShapesInValue
+export declare function findSecretShapesInValue(value: unknown, shapes?: readonly SecretShape[]): ValueShapeMatch[];
+
+### build/redact.d.ts#redactSecretShapes
+export declare function redactSecretShapes(text: string, options?: RedactShapeOptions): string;
 
 ### build/redact.d.ts#redactSecrets
 export declare function redactSecrets(text: string, secrets: readonly Secret[], options?: RedactOptions): string;
