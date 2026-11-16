@@ -154,10 +154,10 @@ The entry `@mark1russell7/text/parts` divides a text into parts. A part with `hi
 ```ts
 import { partsAt, partsOf } from "@mark1russell7/text/parts";
 
-partsOf("key=[secret] and [secret]", "[secret]");
-// [{ text: "key=", hit: false }, { text: "[secret]", hit: true }, { text: " and ", hit: false }, { text: "[secret]", hit: true }]
-partsAt("And 11=2 is false", [[4, 8]]);
-// [{ text: "And ", hit: false }, { text: "11=2", hit: true }, { text: " is false", hit: false }]
+partsOf("one cat, two cats", "cat");
+// [{ text: "one ", hit: false }, { text: "cat", hit: true }, { text: ", two ", hit: false }, { text: "cat", hit: true }, { text: "s", hit: false }]
+partsAt("A wide river", [[2, 6]]);
+// [{ text: "A ", hit: false }, { text: "wide", hit: true }, { text: " river", hit: false }]
 ```
 
 The parts obey these rules:
