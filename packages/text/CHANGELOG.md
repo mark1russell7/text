@@ -1,5 +1,17 @@
 # Changelog of @mark1russell7/text
 
+## 0.0.10
+
+PATCH: new exports before 1.0. The new entry `@mark1russell7/text/html` has `scanHtml`, its types and `HTML_SKIP`.
+
+- `scanHtml` scans HTML for its text and its start tags in one linear pass, with no DOM. Each start tag gives its name and its attributes.
+- The content of each element of the option `skip` gives no text and no element. The default is `script`, `style` and `template`.
+- The content of a script, a style, a title or a text area has no tags.
+- The scan comes from `noScriptText` of `@mark1russell7/site-pages`. After this version is on npm, site-pages keeps only its floor of text, and its check of the icon link uses the same scan.
+- A test holds the entry `./html` at 1100 bytes or fewer, a limit predicted before its first measure. The root entry does not change.
+
+Runtime dependencies: no change against `0.0.9` (none).
+
 ## 0.0.9
 
 PATCH: new exports before 1.0. The new entry `@mark1russell7/text/order` has two orders of texts: `compareCodeUnits` and `compareCodePoints`.

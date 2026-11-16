@@ -52,7 +52,39 @@ partsOf: build/parts.d.ts#partsOf
 compareCodePoints: build/order.d.ts#compareCodePoints
 compareCodeUnits: build/order.d.ts#compareCodeUnits
 
+## ./html (build/html.d.ts): names
+
+HTML_SKIP: build/html.d.ts#HTML_SKIP
+HtmlElement: build/html.d.ts#HtmlElement
+HtmlScan: build/html.d.ts#HtmlScan
+HtmlScanOptions: build/html.d.ts#HtmlScanOptions
+scanHtml: build/html.d.ts#scanHtml
+
 ## Declarations
+
+### build/html.d.ts#HTML_SKIP
+export declare const HTML_SKIP: readonly string[];
+
+### build/html.d.ts#HtmlElement
+export interface HtmlElement {
+  readonly name: string;
+  readonly attributes: Readonly<Record<string, string>>;
+  readonly start: number;
+}
+
+### build/html.d.ts#HtmlScan
+export interface HtmlScan {
+  readonly text: string;
+  readonly elements: readonly HtmlElement[];
+}
+
+### build/html.d.ts#HtmlScanOptions
+export interface HtmlScanOptions {
+  readonly skip?: readonly string[];
+}
+
+### build/html.d.ts#scanHtml
+export declare function scanHtml(html: string, options?: HtmlScanOptions): HtmlScan;
 
 ### build/index.d.ts#countOf
 export declare function countOf(count: number, noun: string, plural?: string): string;

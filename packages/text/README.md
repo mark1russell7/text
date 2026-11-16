@@ -1,6 +1,6 @@
 # @mark1russell7/text
 
-Plain text helpers in seven groups: the escapes of a text for five targets, the English word forms and a word search. The other four groups are the text of a thrown value, the removal of secrets, lengths with cuts and padding, and marked parts.
+Plain text helpers in nine groups: the escapes of a text for five targets, the English word forms and a word search. The next three groups are the order of texts, the text of a thrown value and the removal of secrets. The last three are lengths with cuts and padding, marked parts and a scan of HTML.
 
 ```sh
 pnpm add @mark1russell7/text
@@ -211,6 +211,27 @@ The parts obey these rules:
 - Two ranges that touch stay two parts. Two ranges that overlap become one part.
 - An empty range, an empty `find` and an empty text give no part with `hit`.
 
+## A scan of HTML
+
+The entry `@mark1russell7/text/html` scans HTML for its text and its start tags, with no DOM. A check of a page uses it, for example for the text that a reader with no script gets, or for a `link` with `rel="icon"`.
+
+- `scanHtml(html, options)` gives `text` and `elements`. Each element has its name in lower case, its attributes and the index of its `<`.
+- The content of each element of `skip` gives no text and no element. The default `HTML_SKIP` is `script`, `style` and `template`.
+- A comment, a tag, a doctype and a processing instruction each give one space, so two words in two elements stay two words.
+- The content of a title or a text area is text with no tags.
+- The scan is linear in the length of the HTML.
+
+```ts
+import { scanHtml } from "@mark1russell7/text/html";
+
+const { text, elements } = scanHtml('<h1>Title</h1><script>draw()</script><link rel="icon" href="/favicon.svg">');
+text.replace(/\s+/g, " ").trim(); // "Title"
+elements.some((element) => element.name === "link" && element.attributes["rel"] === "icon"); // true
+
+// The text of the body for a reader with no script:
+scanHtml("<html><head><title>T</title></head><body><noscript>On</noscript>Body</body></html>", { skip: ["head", "script", "style", "template", "noscript"] }).text; // "    Body  "
+```
+
 ## The copies that this package replaces
 
 The tests run 58 copies of these functions from other repositories of the owner. Each copy comes from a list of the duplication atlas, at a pinned commit. The file `test/copies.json` has each copy, and `test/differences.ts` has each difference from the function of this package, with its reason. A copy that is not in the list gives the same output on each of the 1000 test strings.
@@ -231,3 +252,7 @@ The tests also examine 18 copies of a cut with a mark, from a later list of the 
 - In `pad`, a grapheme of the fill can join the text or the next copy of the fill. A combining mark and a lone regional indicator do this. Then the result has fewer graphemes than the width.
 - `partsAt` counts in code units, as `String.prototype.slice` does. A range can cut a surrogate pair or a grapheme.
 - The three functions count units, not the width on a screen. A wide character, for example 日, is one unit, as a narrow character is.
+- `scanHtml` does not make a tree. It does not close an element with no end tag, and it does not move an element as a browser does.
+- `scanHtml` keeps the character references of the text and of each attribute value. Thus `&amp;` stays as five characters.
+- In `scanHtml`, a comment or a skipped element with no end is text. A browser hides the rest of the page in that case.
+- In `scanHtml`, a tag in a word also gives a space. Thus `a<b>c</b>` gives the text `a c `.
