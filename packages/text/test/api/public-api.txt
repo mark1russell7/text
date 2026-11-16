@@ -6,7 +6,7 @@
 
 ## . (build/index.d.ts): names
 
-countOf: build/index.d.ts#countOf
+countOf: build/english.d.ts#countOf
 errorMessage: build/index.d.ts#errorMessage
 escapeAttribute: build/index.d.ts#escapeAttribute
 escapeHtml: build/index.d.ts#escapeHtml
@@ -60,7 +60,25 @@ HtmlScan: build/html.d.ts#HtmlScan
 HtmlScanOptions: build/html.d.ts#HtmlScanOptions
 scanHtml: build/html.d.ts#scanHtml
 
+## ./english (build/english.d.ts): names
+
+ListOptions: build/english.d.ts#ListOptions
+countOf: build/english.d.ts#countOf
+listOf: build/english.d.ts#listOf
+
 ## Declarations
+
+### build/english.d.ts#ListOptions
+export interface ListOptions {
+  readonly conjunction?: string;
+  readonly serialComma?: boolean;
+}
+
+### build/english.d.ts#countOf
+export declare function countOf(count: number, noun: string, plural?: string): string;
+
+### build/english.d.ts#listOf
+export declare function listOf(parts: readonly string[], options?: ListOptions): string;
 
 ### build/html.d.ts#HTML_SKIP
 export declare const HTML_SKIP: readonly string[];
@@ -85,9 +103,6 @@ export interface HtmlScanOptions {
 
 ### build/html.d.ts#scanHtml
 export declare function scanHtml(html: string, options?: HtmlScanOptions): HtmlScan;
-
-### build/index.d.ts#countOf
-export declare function countOf(count: number, noun: string, plural?: string): string;
 
 ### build/index.d.ts#errorMessage
 export declare function errorMessage(error: unknown): string;
