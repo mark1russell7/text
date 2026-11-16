@@ -1,5 +1,30 @@
 # Changelog of @mark1russell7/text
 
+## 0.0.9
+
+PATCH: new exports before 1.0. The new entry `@mark1russell7/text/order` has two orders of texts: `compareCodeUnits` and `compareCodePoints`.
+
+- `compareCodeUnits` compares the UTF-16 code units, as the operator `<` and the default sort do.
+- `compareCodePoints` compares the Unicode code points. A surrogate pair is one code point, and a lone surrogate is its own code point.
+- The two orders are different only in one case. At the first code point that is different, one text has a code point above U+FFFF. The other text has a lone surrogate or a code unit from U+E000 to U+FFFF.
+- A test compares `compareCodePoints` with a reference order for each two texts of 3 code units or fewer, with each pair and each lone surrogate. The same test holds the rule of the case where the two orders are different.
+- The six copies of the order of the code units in `mark1russell7/alerts` move to `compareCodeUnits` after this version is on npm.
+- The orders are in their own entry, so the root entry does not change. With the orders, the root entry had 867 bytes after `esbuild` and `gzip` at level 9, above its limit of 700 bytes. A test holds the entry `./order` at 400 bytes or fewer.
+
+Runtime dependencies: no change against `0.0.8` (none).
+
+## 0.0.8
+
+PATCH: new exports before 1.0. The entry `@mark1russell7/text/redact` finds the tokens of known services by their shape.
+
+- `findSecretShapes` finds each token of a known shape in a text: GitHub, npm, Anthropic, AWS, Slack, Bearer values and private key blocks. Each match gives the name of its shape and its span, not the token.
+- `redactSecretShapes` puts a mark in place of each match.
+- `findSecretShapesInValue` examines each string of a value, for example a JSON document, and gives the path to each match.
+- `SECRET_SHAPES` is the catalog. Each function also takes its own list of shapes.
+- The entry `./redact` is 1692 bytes after `esbuild` and `gzip` at level 9, and a test holds it at 1900 bytes or fewer. The root entry does not change.
+
+Runtime dependencies: no change against `0.0.7` (none).
+
 ## 0.0.7
 
 PATCH: a new export before 1.0. The new entry `@mark1russell7/text/parts` has `partsAt` and `partsOf`, and their type `TextPart`.
