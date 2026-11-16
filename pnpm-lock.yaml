@@ -168,13 +168,13 @@ importers:
     devDependencies:
       '@mark1russell7/api-report':
         specifier: ^0.5.3
-        version: 0.5.6
+        version: 0.5.8
       '@mark1russell7/boundaries':
         specifier: ^0.2.1
         version: 0.2.1(@swc/core@1.16.22)(dependency-cruiser@18.7.2)
       '@mark1russell7/conventions':
-        specifier: ^0.41.0
-        version: 0.41.10
+        specifier: ^0.42.0
+        version: 0.42.0
       '@mark1russell7/cue':
         specifier: ^2.0.0
         version: 2.1.4
@@ -183,7 +183,7 @@ importers:
         version: 0.3.2
       '@mark1russell7/template-cli':
         specifier: ^0.1.5
-        version: 0.1.7
+        version: 0.1.8
       '@swc/core':
         specifier: ^1.15.0
         version: 1.16.22
@@ -213,8 +213,8 @@ importers:
         specifier: ^2.0.0
         version: 2.1.4
       '@mark1russell7/site-pages':
-        specifier: ^0.4.12
-        version: 0.4.12
+        specifier: ^0.5.4
+        version: 0.5.4
       '@types/node':
         specifier: ^26.6.5
         version: 26.6.6
@@ -238,7 +238,7 @@ importers:
         version: 2.1.4
       '@mark1russell7/rigor-generators':
         specifier: ^0.1.8
-        version: 0.1.16
+        version: 0.1.17
       '@types/node':
         specifier: ^26.6.5
         version: 26.6.6
@@ -464,8 +464,8 @@ packages:
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
 
-  '@mark1russell7/api-report@0.5.6':
-    resolution: {integrity: sha512-WgMnxnLhm7UoZL8aaosuAk8eik69SyhgoJ6y5rSwwX4A4v9kr98/DV+uGZE6B0XsO0oCg6cg57DhPMQKapKyrw==}
+  '@mark1russell7/api-report@0.5.8':
+    resolution: {integrity: sha512-HS395EG0QBs2uA4EZ8gLak2m6YMqkC8XqPagNuE36uY8F6YZmb9Xz5SEr52Gv/6fb6J8JTXpw/zfkZeDAXcdHQ==}
     engines: {node: '>=22'}
     hasBin: true
 
@@ -481,8 +481,8 @@ packages:
       dependency-cruiser:
         optional: true
 
-  '@mark1russell7/conventions@0.41.10':
-    resolution: {integrity: sha512-OD4i/u7PI2U1VORHfQLnkk52MIytd/q8NaqHGVet+V6X/FhekBu9qfMrM1NcnSmZEpTLFx5VvA1WwcW12K0pPQ==}
+  '@mark1russell7/conventions@0.42.0':
+    resolution: {integrity: sha512-KWhUSt52Ol7YaL1ut8dUfzXHmDmrnbXdI9BBwNTCf9oibvrRKi5K/PjdvzD8gh6UvRlINq+Kwqe6H/B8ljcS4w==}
     engines: {node: '>=22'}
     hasBin: true
 
@@ -495,12 +495,16 @@ packages:
     resolution: {integrity: sha512-C94Q4C31aZ8UXx1R0JSBV7DiQFl5tVpbFxHxHzHaSqr3dTgmCkEvLrvlUV8/0/GZqPhQYG9cbX6GOlqfRj/h4g==}
     engines: {node: '>=22'}
 
-  '@mark1russell7/rigor-statistics@0.1.24':
-    resolution: {integrity: sha512-w5iRFZqnu8o0rK3s5NGCxz6zK2i2Q/X4owQu8OqiqzgF+owQ2YE0yc0fh+yhML4fkMlQc3uC3+HjloF9wwy7dg==}
+  '@mark1russell7/rigor-generators@0.1.17':
+    resolution: {integrity: sha512-8AgghtHgTlV+rnOPuCkHQ4rFKfaP42XvOT9dO7kHmgHWPxqoRDy8mrz/p4510W3iyqfHBPGeE31mv7DDX/KzCg==}
     engines: {node: '>=22'}
 
-  '@mark1russell7/site-pages@0.4.12':
-    resolution: {integrity: sha512-bI0V/chXQuUK6fqpBI2Ew078+wykSi9erPdZMvs73NbmM3MIKwEQO7HLRGucSC9147o9C5MxauKAeiGKV0zsjw==}
+  '@mark1russell7/rigor-statistics@0.2.7':
+    resolution: {integrity: sha512-XJ2igHIhxiXEhPIJQjHa0YerAP4g7cJi/NkLphICdPCMhrD5Vwc8CnL9PPxOIz1+oJ0MTJ8eX7Jickcwz269wQ==}
+    engines: {node: '>=22'}
+
+  '@mark1russell7/site-pages@0.5.4':
+    resolution: {integrity: sha512-LGYUaGsq4eEiP15brQD3bMEKXKlZ9wC9ukIAWG8iVnFE0E/Qrrgt74cMV8DT+qZmTwpaldD7+aOKurfB26d4cw==}
     engines: {node: '>=22'}
     hasBin: true
 
@@ -509,8 +513,8 @@ packages:
     engines: {node: '>=22'}
     hasBin: true
 
-  '@mark1russell7/template-cli@0.1.7':
-    resolution: {integrity: sha512-Wy4xa6OgNXyMunSyXOArxmrspLSCuyw1pf1P5X45Uiwe1aWHzn0LJptUYVGUSwT3GTp9FGVDhFMeOnKlapD3Xw==}
+  '@mark1russell7/template-cli@0.1.8':
+    resolution: {integrity: sha512-uGzXp++PCRl+jTwVPZHGm9PkH4jmRx//xbphjE/KP2JA/WyWJ9XTyjRRQvWcVzoUN/hTDnfMNaGBFlT8wdwhUg==}
     engines: {node: '>=22.12'}
     hasBin: true
 
@@ -1759,16 +1763,16 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.6.0
 
-  '@mark1russell7/api-report@0.5.6':
+  '@mark1russell7/api-report@0.5.8':
     dependencies:
-      '@mark1russell7/conventions': 0.41.10
+      '@mark1russell7/conventions': 0.42.0
 
   '@mark1russell7/boundaries@0.2.1(@swc/core@1.16.22)(dependency-cruiser@18.7.2)':
     optionalDependencies:
       '@swc/core': 1.16.22
       dependency-cruiser: 18.7.2
 
-  '@mark1russell7/conventions@0.41.10':
+  '@mark1russell7/conventions@0.42.0':
     dependencies:
       yaml: 2.9.1
 
@@ -1776,19 +1780,21 @@ snapshots:
 
   '@mark1russell7/rigor-generators@0.1.16': {}
 
-  '@mark1russell7/rigor-statistics@0.1.24':
+  '@mark1russell7/rigor-generators@0.1.17': {}
+
+  '@mark1russell7/rigor-statistics@0.2.7':
     dependencies:
       '@mark1russell7/rigor-generators': 0.1.16
 
-  '@mark1russell7/site-pages@0.4.12':
+  '@mark1russell7/site-pages@0.5.4':
     dependencies:
-      '@mark1russell7/rigor-statistics': 0.1.24
+      '@mark1russell7/rigor-statistics': 0.2.7
 
   '@mark1russell7/ste-lint@0.3.2':
     dependencies:
       typescript: 6.0.3
 
-  '@mark1russell7/template-cli@0.1.7':
+  '@mark1russell7/template-cli@0.1.8':
     dependencies:
       '@clack/prompts': 1.8.1
 
