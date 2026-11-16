@@ -18,7 +18,13 @@ describe("the entries", () => {
       "searchKey",
       "wordSearch",
     ]);
-    expect(Object.keys(redact)).toEqual(["redactSecrets"]);
+    expect(Object.keys(redact).sort()).toEqual([
+      "SECRET_SHAPES",
+      "findSecretShapes",
+      "findSecretShapesInValue",
+      "redactSecretShapes",
+      "redactSecrets",
+    ]);
     expect(Object.keys(length).sort()).toEqual(["pad", "textLength", "truncate"]);
     expect(Object.keys(parts).sort()).toEqual(["partsAt", "partsOf"]);
   });

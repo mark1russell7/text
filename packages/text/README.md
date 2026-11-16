@@ -102,7 +102,7 @@ The function examines the text one time. At each position, it removes the longes
 
 ### The shapes of tokens
 
-`redactSecrets` needs the secret. A text can also hold a token that you do not know, for example the output of a command in the answer to a form. `findSecretShapes(text, shapes?)` finds the tokens of known services by their shape. Use it to refuse a text before you write it or send it. Each match gives the name of its shape and its span, never the token.
+`redactSecrets` needs the secret. A text can also hold a token that you do not know, for example the output of a command in the answer to a form. `findSecretShapes(text, shapes?)` finds the tokens of known services by their shape. Use it to refuse a text before you write it or send it. Each match gives the name of its shape and its span. It does not give the token.
 
 | Shape | What it is |
 | --- | --- |
@@ -117,7 +117,7 @@ The function examines the text one time. At each position, it removes the longes
 
 `SECRET_SHAPES` is the catalog. Each `SecretShape` has `id`, `label` and `pattern`. To find more shapes, give your own list. `redactSecretShapes(text, options?)` puts a mark in place of each match. Matches that overlap give one mark. `RedactShapeOptions` has `mark` and `shapes`.
 
-`findSecretShapesInValue(value, shapes?)` examines each string of a value, for example the body of a JSON document. Each match also gives `path`, the keys and indexes to its string, and `inKey`. Do not examine the JSON text: an escape such as `\n` puts a letter directly before a token at the start of a line, so the token is not a match.
+`findSecretShapesInValue(value, shapes?)` examines each string of a value, for example the body of a JSON document. Each match also gives `path`, the keys and indexes to its string, and `inKey`. Do not examine the JSON text. An escape, for example `\n`, puts a letter directly before a token at the start of a line. Then the token is not a match.
 
 ```ts
 import { findSecretShapes, redactSecretShapes } from "@mark1russell7/text/redact";
@@ -209,7 +209,7 @@ The tests also examine 18 copies of a cut with a mark, from a later list of the 
 - `countOf` knows no irregular plural. Give the plural noun for each noun that does not add "s".
 - `errorMessage` gives only the message. It does not add the name of the error, its `cause` or its stack.
 - `redactSecrets` removes only the forms in its table. A secret in a JSON string with escapes, or in a different encoding, stays.
-- `findSecretShapes` knows only the shapes in its table. A token directly after a letter or a digit is not a match, and a token of a service that is not in the table stays.
+- `findSecretShapes` knows only the shapes in its table. A token directly after a letter or a digit is not a match. A token of a service that is not in the table stays.
 - `textLength`, `truncate` and `pad` count graphemes with the `Intl.Segmenter` of the runtime. An old runtime can count a new emoji as more than one grapheme.
 - In `pad`, a grapheme of the fill can join the text or the next copy of the fill. A combining mark and a lone regional indicator do this. Then the result has fewer graphemes than the width.
 - `partsAt` counts in code units, as `String.prototype.slice` does. A range can cut a surrogate pair or a grapheme.

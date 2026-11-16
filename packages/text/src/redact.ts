@@ -90,7 +90,7 @@ export function redactSecrets(text: string, secrets: readonly Secret[], options:
 
 /**
  * A shape of a token of a known service. A match of the pattern is a token, also when you do not know the secret. A
- * report gives `id` and `label`, never the token.
+ * report gives `id` and `label`. It does not give the token.
  */
 export interface SecretShape {
   /** The name of the shape, for example `github-classic`. */
@@ -214,8 +214,8 @@ function pathOf(node: WalkNode): (string | number)[] {
 }
 
 /**
- * This function finds each match of each shape in each string of a value: the value itself, the items of arrays, and
- * the keys and the values of objects. Use it on a JSON document. A scan of the JSON text misses a token after an
+ * This function finds each match of each shape in each string of a value. The strings are the value itself, the items
+ * of arrays, and the keys and the values of objects. Use it on a JSON document. A scan of the JSON text misses a token after an
  * escape, for example a token at the start of a line. The function examines each object one time, in the order of
  * the document.
  *
