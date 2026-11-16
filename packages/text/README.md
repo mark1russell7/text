@@ -38,6 +38,19 @@ countOf(1024, "site"); // "1,024 sites"
 countOf(3, "match", "matches"); // "3 matches"
 ```
 
+`listOf(parts, options?)` joins the parts into an English list. A comma goes between the parts, and the conjunction goes before the last part. The option `conjunction` sets the word, and its default is "and". With the option `serialComma`, a comma also goes before the conjunction in a list of three parts or more.
+
+The entry `@mark1russell7/text/english` has `listOf` and `countOf`. The root entry has only `countOf`, to keep its size.
+
+```ts
+import { listOf } from "@mark1russell7/text/english";
+
+listOf([]); // ""
+listOf(["a", "b"]); // "a and b"
+listOf(["a", "b", "c"]); // "a, b and c"
+listOf(["a", "b", "c"], { conjunction: "or", serialComma: true }); // "a, b, or c"
+```
+
 ## A word search
 
 `wordSearch(query)` gives a test of a text. A text agrees when it has each word of the search, in any order and in any case. A word can be a part of a longer word.
@@ -245,6 +258,7 @@ The tests also examine 18 copies of a cut with a mark, from a later list of the 
 - `escapeMarkdown` does not change spaces. Four spaces at the start of a line make a code block.
 - `wordSearch` keeps accents, so "cafe" does not find "café".
 - `countOf` knows no irregular plural. Give the plural noun for each noun that does not add "s".
+- `listOf` does not change the parts. A part with a comma makes a list that a reader cannot split again.
 - `errorMessage` gives only the message. It does not add the name of the error, its `cause` or its stack.
 - `redactSecrets` removes only the forms in its table. A secret in a JSON string with escapes, or in a different encoding, stays.
 - `findSecretShapes` knows only the shapes in its table. A token directly after a letter or a digit is not a match. A token of a service that is not in the table stays.

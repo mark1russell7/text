@@ -1,5 +1,16 @@
 # Changelog of @mark1russell7/text
 
+## 0.0.11
+
+PATCH: a new export before 1.0. The new entry `@mark1russell7/text/english` has `countOf` and the new `listOf`.
+
+- `listOf(parts, options?)` joins the parts into an English list: "a", "a and b" or "a, b and c". No part gives an empty text.
+- The option `conjunction` sets the word before the last part, and its default is "and". The option `serialComma` adds a comma before the conjunction in a list of three parts or more.
+- The list join comes from `listText` of `@mark1russell7/site-pages`. After this version is on npm, site-pages uses `listOf`, `countOf` and `escapeAttribute` in place of its three copies.
+- The root entry does not change, because it has 663 of its 700 bytes. A test holds the entry `./english` at 300 bytes or fewer, a limit predicted before its first measure.
+
+Runtime dependencies: no change against `0.0.10` (none).
+
 ## 0.0.10
 
 PATCH: new exports before 1.0. The new entry `@mark1russell7/text/html` has `scanHtml`, its types and `HTML_SKIP`.

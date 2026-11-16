@@ -1,5 +1,6 @@
 /**
- * This module has the English word forms.
+ * This module has the English word forms: a count with a noun, and a list of parts. It is the entry
+ * `@mark1russell7/text/english`. The root entry has only `countOf`.
  */
 
 /**
@@ -14,4 +15,27 @@
  */
 export function countOf(count: number, noun: string, plural = `${noun}s`): string {
   return `${count.toLocaleString("en")} ${count === 1 ? noun : plural}`;
+}
+
+/** The options of `listOf`. */
+export interface ListOptions {
+  /** The word before the last part. The default is "and". */
+  readonly conjunction?: string;
+  /** With true, a comma also goes before the conjunction in a list of three parts or more. The default is false. */
+  readonly serialComma?: boolean;
+}
+
+/**
+ * This function joins the parts into an English list, for example "a", "a and b" or "a, b and c". A comma and a space go
+ * between the parts, and the conjunction goes before the last part. No part gives an empty text. The parts do not change.
+ *
+ * @param parts - The parts of the list, in their order.
+ * @param options - The conjunction and the serial comma.
+ * @returns The list as one text.
+ */
+export function listOf(parts: readonly string[], options: ListOptions = {}): string {
+  const { conjunction = "and", serialComma = false } = options;
+  if (parts.length < 2) return parts[0] ?? "";
+  const comma = serialComma && parts.length > 2 ? "," : "";
+  return `${parts.slice(0, -1).join(", ")}${comma} ${conjunction} ${parts[parts.length - 1]}`;
 }
