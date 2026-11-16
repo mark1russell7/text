@@ -158,6 +158,32 @@ redactSecretShapes(answer); // "token: [secret]"
 findSecretShapes("the prefix ghp_ in a sentence"); // []
 ```
 
+### The shapes of a secret by its context
+
+A password or a key of a service that is not in the table has no shape. Its context can still tell that it is a secret. The context is the name of a parameter, a flag, a field or a header, or the user part of a URL. `CONTEXT_SHAPES` has these shapes. A match is the value only, so the name stays. Use these shapes with `SECRET_SHAPES` on a log line or a command line. Do not use them to refuse a text, because they can match a text with no secret, for example `token: none`.
+
+| Shape | What it finds |
+| --- | --- |
+| `secret-parameter` | The value after a name of a secret and `=` or `:`, for example `?access_token=v`, `GITHUB_TOKEN=v`, `"apiKey": "v"` and `X-Api-Key: v` |
+| `secret-flag` | The value after a flag with a name of a secret and a space, for example `--password v`. A value that starts with `-`, `<`, `>` or `\|` is not a match |
+| `url-password` | The password in `scheme://user:password@host` |
+| `authorization` | The credential of an `Authorization` or `Proxy-Authorization` header, after its scheme |
+| `user-password` | The password of `user:password` after the curl flag `-u`, `--user` or `--proxy-user` |
+
+A name of a secret ends in one of these words, with no case: `token`, `secret`, `password`, `passwd`, `passphrase`, `credential`, `credentials`, `signature`, `sig` or `auth`. It can also end in `pwd` with one character before it. Or it can end in `key` after `api`, `access`, `secret`, `private`, `signing`, `encryption`, `master`, `license`, `ssh` or `client`. `key` alone is also a name. `isSecretName(name)` tells if a name agrees with this rule, for example the key of a field of a document.
+
+A shape of your own can give the span of a part of its match: give the part a group with the name `secret`.
+
+```ts
+import { CONTEXT_SHAPES, isSecretName, redactSecretShapes, SECRET_SHAPES } from "@mark1russell7/text/redact";
+
+const shapes = [...SECRET_SHAPES, ...CONTEXT_SHAPES];
+redactSecretShapes("PGPASSWORD=hunter2 psql --token abc123", { shapes }); // "PGPASSWORD=[secret] psql --token [secret]"
+redactSecretShapes("git clone https://user:p%40ss@example.com/r.git", { shapes }); // "git clone https://user:[secret]@example.com/r.git"
+isSecretName("client_secret"); // true
+isSecretName("PWD"); // false
+```
+
 ## Lengths, truncation and padding
 
 The entry `@mark1russell7/text/length` has three functions. Each function counts in the unit that you give. The default unit is `code-unit`.
@@ -262,6 +288,7 @@ The tests also examine 18 copies of a cut with a mark, from a later list of the 
 - `errorMessage` gives only the message. It does not add the name of the error, its `cause` or its stack.
 - `redactSecrets` removes only the forms in its table. A secret in a JSON string with escapes, or in a different encoding, stays.
 - `findSecretShapes` knows only the shapes in its table. A token directly after a letter or a digit is not a match. A token of a service that is not in the table stays.
+- `CONTEXT_SHAPES` needs the name of a secret before the value. A value with a name that is not in the rule stays, and so does a quoted value that holds its own quote. A value with no quotes ends at a space, a quote, `&` or `#`.
 - `textLength`, `truncate` and `pad` count graphemes with the `Intl.Segmenter` of the runtime. An old runtime can count a new emoji as more than one grapheme.
 - In `pad`, a grapheme of the fill can join the text or the next copy of the fill. A combining mark and a lone regional indicator do this. Then the result has fewer graphemes than the width.
 - `partsAt` counts in code units, as `String.prototype.slice` does. A range can cut a surrogate pair or a grapheme.
