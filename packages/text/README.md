@@ -55,7 +55,7 @@ searchKey("ﬁle"); // "file"
 
 ## The order of texts
 
-The two orders are the same in each locale and in each copy of a program. The name of each function tells its unit.
+The entry `@mark1russell7/text/order` has two orders of texts. Each order is the same in each locale and in each copy of a program. The name of each function tells its unit.
 
 - `compareCodeUnits(a, b)` compares the UTF-16 code units. The operator `<`, the default sort and canonical JSON (RFC 8785) use this order.
 - `compareCodePoints(a, b)` compares the Unicode code points. A surrogate pair is one code point above U+FFFF.
@@ -63,7 +63,7 @@ The two orders are the same in each locale and in each copy of a program. The na
 The two orders are different only in one case. At the first code point that is different, one text has a code point above U+FFFF. The other text has a lone surrogate or a code unit from U+E000 to U+FFFF at that place.
 
 ```ts
-import { compareCodePoints, compareCodeUnits } from "@mark1russell7/text";
+import { compareCodePoints, compareCodeUnits } from "@mark1russell7/text/order";
 
 ["b", "a"].sort(compareCodeUnits); // ["a", "b"]
 compareCodeUnits("😀", "～"); // -1: the high surrogate U+D83D is below U+FF5E

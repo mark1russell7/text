@@ -2,13 +2,14 @@
 
 ## 0.0.9
 
-PATCH: new exports before 1.0. The root entry has two orders of texts: `compareCodeUnits` and `compareCodePoints`.
+PATCH: new exports before 1.0. The new entry `@mark1russell7/text/order` has two orders of texts: `compareCodeUnits` and `compareCodePoints`.
 
 - `compareCodeUnits` compares the UTF-16 code units, as the operator `<` and the default sort do.
 - `compareCodePoints` compares the Unicode code points. A surrogate pair is one code point, and a lone surrogate is its own code point.
 - The two orders are different only in one case. At the first code point that is different, one text has a code point above U+FFFF. The other text has a lone surrogate or a code unit from U+E000 to U+FFFF.
 - A test compares `compareCodePoints` with a reference order for each two texts of 3 code units or fewer, with each pair and each lone surrogate. The same test holds the rule of the case where the two orders are different.
 - The six copies of the order of the code units in `mark1russell7/alerts` move to `compareCodeUnits` after this version is on npm.
+- The orders are in their own entry, so the root entry does not change. With the orders, the root entry had 867 bytes after `esbuild` and `gzip` at level 9, above its limit of 700 bytes. A test holds the entry `./order` at 400 bytes or fewer.
 
 Runtime dependencies: no change against `0.0.8` (none).
 

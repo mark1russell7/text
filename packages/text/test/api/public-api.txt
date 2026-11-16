@@ -6,8 +6,6 @@
 
 ## . (build/index.d.ts): names
 
-compareCodePoints: build/index.d.ts#compareCodePoints
-compareCodeUnits: build/index.d.ts#compareCodeUnits
 countOf: build/index.d.ts#countOf
 errorMessage: build/index.d.ts#errorMessage
 escapeAttribute: build/index.d.ts#escapeAttribute
@@ -49,13 +47,12 @@ TextPart: build/parts.d.ts#TextPart
 partsAt: build/parts.d.ts#partsAt
 partsOf: build/parts.d.ts#partsOf
 
+## ./order (build/order.d.ts): names
+
+compareCodePoints: build/order.d.ts#compareCodePoints
+compareCodeUnits: build/order.d.ts#compareCodeUnits
+
 ## Declarations
-
-### build/index.d.ts#compareCodePoints
-export declare function compareCodePoints(a: string, b: string): number;
-
-### build/index.d.ts#compareCodeUnits
-export declare function compareCodeUnits(a: string, b: string): number;
 
 ### build/index.d.ts#countOf
 export declare function countOf(count: number, noun: string, plural?: string): string;
@@ -116,6 +113,12 @@ export declare function textLength(text: string, unit?: TextUnit): number;
 
 ### build/length.d.ts#truncate
 export declare function truncate(text: string, max: number, options?: TruncateOptions): string;
+
+### build/order.d.ts#compareCodePoints
+export declare function compareCodePoints(a: string, b: string): number;
+
+### build/order.d.ts#compareCodeUnits
+export declare function compareCodeUnits(a: string, b: string): number;
 
 ### build/parts.d.ts#TextPart
 export interface TextPart {

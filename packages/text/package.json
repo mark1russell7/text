@@ -40,6 +40,7 @@
     "./redact": "./src/redact.ts",
     "./length": "./src/length.ts",
     "./parts": "./src/parts.ts",
+    "./order": "./src/order.ts",
     "./package.json": "./package.json"
   },
   "files": [
@@ -70,6 +71,10 @@
       "./parts": {
         "types": "./build/parts.d.ts",
         "default": "./build/parts.js"
+      },
+      "./order": {
+        "types": "./build/order.d.ts",
+        "default": "./build/order.js"
       },
       "./package.json": "./package.json"
     }

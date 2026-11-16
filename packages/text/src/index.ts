@@ -1,10 +1,10 @@
 /**
  * The entry of `@mark1russell7/text`: plain text helpers. The first group is the escapes for HTML, attributes, regular
  * expressions, Markdown and GitHub Actions workflow commands. The other groups are the English word forms, a word
- * search, the text of a thrown value and two orders of texts. The entry `@mark1russell7/text/redact` removes secrets from a text.
+ * search and the text of a thrown value. The entry `@mark1russell7/text/redact` removes secrets from a text, and the entry
+ * `@mark1russell7/text/order` has two orders of texts.
  */
 export { countOf } from "./english.ts";
-export { compareCodePoints, compareCodeUnits } from "./order.ts";
 export { errorMessage } from "./error.ts";
 export { escapeAttribute, escapeHtml, escapeMarkdown, escapeRegExp, escapeWorkflowData, escapeWorkflowProperty } from "./escape.ts";
 export { searchKey, wordSearch } from "./search.ts";
