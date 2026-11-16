@@ -97,7 +97,11 @@ export interface SecretShape {
   readonly id: string;
   /** The words that tell a writer what the shape is. */
   readonly label: string;
-  /** The pattern of a token of the shape. The functions add the flag `g` to a copy of it. */
+  /**
+   * The pattern of a token of the shape. The functions add the flags `d` and `g` to a copy of it. If the pattern has a
+   * group with the name `secret`, a match is the span of that group, and the text around it stays. An example is the
+   * name of a parameter before its value. If that group does not match, the match gives no span.
+   */
   readonly pattern: RegExp;
 }
 
@@ -148,9 +152,83 @@ export const SECRET_SHAPES: readonly SecretShape[] = Object.freeze([
   ),
 ]);
 
-/** A copy of a pattern with the flag `g` and without the flag `y`, for `matchAll`. */
+/**
+ * The last words of a name that holds a secret, for `isSecretName` and `CONTEXT_SHAPES`. The words are not case
+ * sensitive. Any letters, digits, `_`, `.` or `-` can come before a word. Thus `GITHUB_TOKEN`, `PGPASSWORD`,
+ * `accessToken`, `X-Api-Key` and `client_secret` are names of secrets. The word `pwd` needs one character before it,
+ * because the variable `PWD` holds a folder. The word `key` needs a word that names a secret key before it, or nothing.
+ */
+const NAME =
+  "(?:[A-Za-z0-9_.-]*(?:token|secret|password|passwd|passphrase|credentials?|signature|sig|auth|(?:api|access|secret|private|signing|encryption|master|license|ssh|client)[_.-]?key)|[A-Za-z0-9_.-]+pwd|(?<![A-Za-z0-9_.-])key)";
+
+/** A name of a context shape starts at the start of the text, or after a character that is not in a name. */
+const NAME_START = "(?<![A-Za-z0-9_.-])";
+
+/**
+ * A value is a text in double quotes or in single quotes on one line. Else it is the characters up to a space, a quote,
+ * `&` or `#`. A value with an open quote and no end quote ends at a space. The group `secret` holds the value.
+ */
+const VALUE = `["']?(?<secret>(?<=")[^"\\n]*(?=")|(?<=')[^'\\n]*(?=')|[^\\s"'&#]+)`;
+
+/** The words of the schemes of the HTTP `Authorization` header. */
+const SCHEMES = "(?:Basic|Bearer|Token|Digest|Negotiate|NTLM)";
+
+/** This function makes a frozen context shape. The pattern is `NAME_START` and then `body`, with no case. */
+function contextShapeOf(id: string, label: string, body: string): SecretShape {
+  return Object.freeze({ id, label, pattern: new RegExp(`${NAME_START}${body}`, "i") });
+}
+
+/**
+ * The shapes of a secret by its context. The context is the name of a parameter, a flag, a field or a header, or the
+ * user part of a URL. A match is the value only, so the name stays: `--password [secret]`. These shapes find a secret that has no
+ * known form, for example a password. They can also match a text with no secret, for example `token: none`. Thus use
+ * them to redact a log line or a command line, together with `SECRET_SHAPES`, and not to refuse a text.
+ *
+ * - `secret-parameter`: a name of a secret, then `=` or `:`, then the value. Examples are `?access_token=v`,
+ *   `GITHUB_TOKEN=v`, `--password=v`, `"apiKey": "v"` and `X-Api-Key: v`. A name directly after `//` is the user
+ *   of a URL, so it is not a match.
+ * - `secret-flag`: a flag with a name of a secret, a space and the value, for example `--token v`. A value can start
+ *   with `-`, `<`, `>` or `|`. Then it is the next flag or a part of the shell, so it is not a match.
+ * - `url-password`: the password of the user part of a URL, for example `https://user:v@host`.
+ * - `authorization`: the value of an `Authorization` or `Proxy-Authorization` header, after its scheme. An example is
+ *   `Authorization: Basic v`.
+ * - `user-password`: the password of a `user:password` after the flag `-u`, `--user` or `--proxy-user` of curl.
+ */
+export const CONTEXT_SHAPES: readonly SecretShape[] = Object.freeze([
+  contextShapeOf("secret-parameter", "the value of a parameter, a variable or a field with the name of a secret", `(?<!//)${NAME}["']?\\s*[:=]\\s*${VALUE}`),
+  contextShapeOf("secret-flag", "the value after a flag with the name of a secret", `-{1,2}${NAME}\\s+(?![-<>|])${VALUE}`),
+  contextShapeOf("url-password", "the password in the user part of a URL", "[A-Za-z][A-Za-z0-9+.-]*://[^\\s/?#@:]*:(?<secret>[^\\s/?#@]+)@"),
+  contextShapeOf(
+    "authorization",
+    "the credential of an HTTP Authorization header",
+    `(?:Proxy-)?Authorization["']?\\s*[:=]\\s*["']?(?:${SCHEMES}\\s+)?(?!${SCHEMES}(?![A-Za-z0-9]))(?<secret>[^\\s"',]+)`,
+  ),
+  contextShapeOf("user-password", "the password of the user option of curl", `(?:-u|--user|--proxy-user)(?:\\s+|=)["']?[^\\s:"']*:(?<secret>[^\\s"']+)`),
+]);
+
+const SECRET_NAME = new RegExp(`^${NAME}$`, "i");
+
+/**
+ * This function tells if a name is the name of a secret, by the rule of `CONTEXT_SHAPES`. Use it on the key of a field
+ * of a document or on the name of a variable. Then you can redact the value of each field with such a name.
+ *
+ * @param name - The name, for example `GITHUB_TOKEN` or `client_secret`.
+ * @returns `true` if the last word of the name is the name of a secret.
+ */
+export function isSecretName(name: string): boolean {
+  return SECRET_NAME.test(name);
+}
+
+/** A copy of a pattern with the flags `d` and `g` and without the flag `y`, for `matchAll` with the spans of groups. */
 function globalCopy(pattern: RegExp): RegExp {
-  return new RegExp(pattern.source, `${pattern.flags.replace(/[gy]/g, "")}g`);
+  return new RegExp(pattern.source, `${pattern.flags.replace(/[dgy]/g, "")}dg`);
+}
+
+/** The span of a match: the span of the group `secret` if the pattern has that group, or else the span of the match. */
+function spanOf(match: RegExpExecArray): readonly [number, number] | undefined {
+  const groups = match.indices?.groups;
+  if (groups !== undefined && "secret" in groups) return groups["secret"];
+  return [match.index, match.index + match[0].length];
 }
 
 /**
@@ -165,8 +243,9 @@ export function findSecretShapes(text: string, shapes: readonly SecretShape[] = 
   const matches: SecretShapeMatch[] = [];
   for (const shape of shapes) {
     for (const match of text.matchAll(globalCopy(shape.pattern))) {
-      if (match[0] === "") continue;
-      matches.push({ shape: shape.id, start: match.index, end: match.index + match[0].length });
+      const span = spanOf(match);
+      if (span === undefined || span[0] === span[1]) continue;
+      matches.push({ shape: shape.id, start: span[0], end: span[1] });
     }
   }
   return matches.sort((left, right) => left.start - right.start || right.end - left.end);

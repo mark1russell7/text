@@ -1,7 +1,17 @@
 import { Buffer } from "node:buffer";
 import { describe, expect, it } from "vitest";
 import { strings } from "../test/strings.ts";
-import { findSecretShapes, findSecretShapesInValue, redactSecrets, redactSecretShapes, SECRET_SHAPES, type SecretShape } from "./redact.ts";
+import { random } from "@mark1russell7/rigor-generators";
+import {
+  CONTEXT_SHAPES,
+  findSecretShapes,
+  findSecretShapesInValue,
+  isSecretName,
+  redactSecrets,
+  redactSecretShapes,
+  SECRET_SHAPES,
+  type SecretShape,
+} from "./redact.ts";
 
 const MARK = "[secret]";
 
@@ -216,5 +226,149 @@ describe("findSecretShapesInValue", () => {
     expect(matches).toHaveLength(1);
     expect(matches[0]?.path).toHaveLength(100_000);
     for (const value of [null, undefined, 3, true, [], {}, [1, [2, { a: 3 }]]]) expect(findSecretShapesInValue(value)).toEqual([]);
+  });
+});
+
+describe("CONTEXT_SHAPES", () => {
+  const all = [...SECRET_SHAPES, ...CONTEXT_SHAPES];
+  const redact = (text: string): string => redactSecretShapes(text, { shapes: CONTEXT_SHAPES });
+
+  it("is frozen, and each id is new", () => {
+    expect(Object.isFrozen(CONTEXT_SHAPES)).toBe(true);
+    for (const shape of CONTEXT_SHAPES) expect(Object.isFrozen(shape)).toBe(true);
+    const ids = all.map((shape) => shape.id);
+    expect(new Set(ids).size).toBe(ids.length);
+  });
+
+  it("puts a mark in place of the value and keeps the name, in real command lines", () => {
+    const cases: readonly [string, string][] = [
+      ['curl "https://api.example.com/v1?access_token=abc123&page=2"', 'curl "https://api.example.com/v1?access_token=[secret]&page=2"'],
+      ["GITHUB_TOKEN=abc123 gh pr list", "GITHUB_TOKEN=[secret] gh pr list"],
+      ["PGPASSWORD=hunter2 psql -h db", "PGPASSWORD=[secret] psql -h db"],
+      ["MYSQL_PWD=hunter2 mysql", "MYSQL_PWD=[secret] mysql"],
+      ["mysql --password=hunter2 -u root", "mysql --password=[secret] -u root"],
+      ["node cli.js --token abc123 --verbose", "node cli.js --token [secret] --verbose"],
+      ['tool --api-key "two words" --x', 'tool --api-key "[secret]" --x'],
+      ["tool --client-secret 'a&b#c' next", "tool --client-secret '[secret]' next"],
+      ['{"apiKey": "abc", "name": "x"}', '{"apiKey": "[secret]", "name": "x"}'],
+      ["X-Api-Key: abc123", "X-Api-Key: [secret]"],
+      ["Private-Token: abc123", "Private-Token: [secret]"],
+      ["git clone https://user:p%40ss@github.com/o/r.git", "git clone https://user:[secret]@github.com/o/r.git"],
+      ["https://x-access-token:abc@github.com/o/r", "https://x-access-token:[secret]@github.com/o/r"],
+      ['curl -H "Authorization: Basic dXNlcjpwYXNz" x', 'curl -H "Authorization: Basic [secret]" x'],
+      ["gh api -H 'authorization: token abc123' /user", "gh api -H 'authorization: token [secret]' /user"],
+      ["Proxy-Authorization: Negotiate abc123", "Proxy-Authorization: Negotiate [secret]"],
+      ["Authorization: abc123", "Authorization: [secret]"],
+      ["curl -u admin:hunter2 https://x", "curl -u admin:[secret] https://x"],
+      ["curl --user=admin:hunter2 https://x", "curl --user=admin:[secret] https://x"],
+      ["https://acct.blob.core.windows.net/c?sv=2024&sig=abc%3D&se=2026", "https://acct.blob.core.windows.net/c?sv=2024&sig=[secret]&se=2026"],
+      ["https://s3.example.com/k?X-Amz-Signature=abc123", "https://s3.example.com/k?X-Amz-Signature=[secret]"],
+      ["https://maps.example.com/api?key=AIzaabc&q=x", "https://maps.example.com/api?key=[secret]&q=x"],
+      ["aws_secret_access_key = abc123", "aws_secret_access_key = [secret]"],
+    ];
+    for (const [text, expected] of cases) expect(redact(text), text).toBe(expected);
+  });
+
+  it("passes the near misses: names that hold no secret, a flag with no value, a URL with no password", () => {
+    const misses = [
+      "PWD=/home/u ls",
+      "sort_key=name monkey=1 max_tokens=100 token_type=bearer password_hash=x",
+      "gh auth login --with-token < token.txt",
+      "tool --token-file /run/t --no-password --verbose",
+      "tool --password | tee",
+      "Authorization: Basic",
+      "https://github.com/o/r ssh://git@github.com/o/r http://localhost:8080/x",
+      "the tokens of the job",
+      'password=""',
+    ];
+    for (const text of misses) expect(findSecretShapes(text, CONTEXT_SHAPES), text).toEqual([]);
+  });
+
+  it("gives the span of the value only, in the order of the text", () => {
+    const text = "a --token v1 b=1 password=v2";
+    expect(findSecretShapes(text, CONTEXT_SHAPES)).toEqual([
+      { shape: "secret-flag", start: 10, end: 12 },
+      { shape: "secret-parameter", start: 26, end: 28 },
+    ]);
+  });
+
+  /** A template of each shape, with the value in its place. */
+  const TEMPLATES: readonly (readonly [string, (value: string) => string])[] = [
+    ["secret-parameter", (value) => `https://h/p?x=1&access_token=${value}&y=2`],
+    ["secret-parameter", (value) => `GITHUB_TOKEN=${value}`],
+    ["secret-parameter", (value) => `X-Api-Key: ${value}`],
+    ["secret-flag", (value) => `--password ${value}`],
+    ["url-password", (value) => `git clone https://user:${value}@github.com/o/r.git`],
+    ["authorization", (value) => `-H "Authorization: Bearer ${value}"`],
+    ["user-password", (value) => `curl -u admin:${value} https://h`],
+  ];
+
+  /** The quoted templates. Their value can hold a space, `&` and `#`. */
+  const QUOTED: readonly (readonly [string, (value: string) => string])[] = [
+    ["secret-parameter", (value) => `{"clientSecret": "${value}"}`],
+    ["secret-flag", (value) => `--auth-token '${value}'`],
+  ];
+
+  /** Seeded values from the letters of tokens. Each starts with `q`, which no seeded noise string has. */
+  function values(seed: string, count: number): string[] {
+    const r = random(seed);
+    const letters = [..."ABCDEFGHJKLMNPQRSTUVWXYbcdefghijkmnopqrstuvwxyz12345678_.~+=-"];
+    return Array.from({ length: count }, () => `q${Array.from({ length: r.int(7, 40) }, () => r.pick(letters)).join("")}`);
+  }
+
+  it("finds the value of each template between two seeded strings, and changes only the value", () => {
+    const texts = strings("text/context-shapes/noise", 100);
+    for (const text of texts) expect(findSecretShapes(text, CONTEXT_SHAPES), text).toEqual([]);
+    const secrets = values("text/context-shapes/values", texts.length);
+    for (const [index, before] of texts.entries()) {
+      const after = texts[(index + 1) % texts.length] ?? "";
+      const value = secrets[index] ?? "q";
+      const cases = [
+        ...TEMPLATES.map(([id, template]) => [id, template, value] as const),
+        ...QUOTED.map(([id, template]) => [id, template, `${value} & #${value}`] as const),
+      ];
+      for (const [id, template, secret] of cases) {
+        const text = `${before} ${template(secret)} ${after}`;
+        const start = before.length + 1 + template(secret).indexOf(secret);
+        expect(findSecretShapes(text, CONTEXT_SHAPES), text).toEqual([{ shape: id, start, end: start + secret.length }]);
+        expect(redact(text)).toBe(`${before} ${template(MARK)} ${after}`);
+      }
+    }
+  });
+
+  it("gives the same text on a second pass", () => {
+    const texts = strings("text/context-shapes/twice", 100);
+    const secrets = values("text/context-shapes/twice-values", texts.length);
+    for (const [index, before] of texts.entries()) {
+      for (const [, template] of [...TEMPLATES, ...QUOTED]) {
+        const once = redactSecretShapes(`${before} ${template(secrets[index] ?? "q")}`, { shapes: all });
+        expect(redactSecretShapes(once, { shapes: all })).toBe(once);
+      }
+    }
+  });
+
+  it("takes the span of the group secret of a shape, and skips a match where that group is empty or does not match", () => {
+    const shapes: SecretShape[] = [{ id: "k", label: "k", pattern: /k(?:=(?<secret>\d*))?/ }];
+    expect(findSecretShapes("k=12 k k= x", shapes)).toEqual([{ shape: "k", start: 2, end: 4 }]);
+    expect(redactSecretShapes("k=12", { shapes })).toBe(`k=${MARK}`);
+  });
+});
+
+describe("isSecretName", () => {
+  it("knows the names of secrets by their last word, with no case", () => {
+    const names = ["GITHUB_TOKEN", "PGPASSWORD", "accessToken", "X-Api-Key", "client_secret", "MYSQL_PWD", "key", "sig", "X-Amz-Signature", "passphrase", "auth"];
+    for (const name of names) expect(isSecretName(name), name).toBe(true);
+    const others = ["PWD", "sort_key", "monkey", "tokens", "token_type", "password_hash", "name", "", "keys", "GITHUB_TOKEN "];
+    for (const name of others) expect(isSecretName(name), name).toBe(false);
+  });
+
+  it("agrees with the shape secret-parameter for each seeded name", () => {
+    const r = random("text/context-shapes/names");
+    const words = ["token", "key", "api_key", "pwd", "secret", "name", "sig", "auth", "sort", "PASSWORD", "Monkey", "x"];
+    for (let index = 0; index < 500; index += 1) {
+      const name = Array.from({ length: r.int(1, 3) }, () => r.pick(words)).join(r.pick(["_", "-", ".", ""]));
+      const found = findSecretShapes(`${name}=v`, CONTEXT_SHAPES).length > 0;
+      expect(found, name).toBe(isSecretName(name));
+    }
   });
 });

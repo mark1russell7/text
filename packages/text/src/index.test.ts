@@ -22,9 +22,11 @@ describe("the entries", () => {
       "wordSearch",
     ]);
     expect(Object.keys(redact).sort()).toEqual([
+      "CONTEXT_SHAPES",
       "SECRET_SHAPES",
       "findSecretShapes",
       "findSecretShapesInValue",
+      "isSecretName",
       "redactSecretShapes",
       "redactSecrets",
     ]);

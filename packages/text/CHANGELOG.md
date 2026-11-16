@@ -1,5 +1,18 @@
 # Changelog of @mark1russell7/text
 
+## 0.0.12
+
+PATCH: new exports before 1.0. The entry `@mark1russell7/text/redact` finds a secret by its context.
+
+- `CONTEXT_SHAPES` finds the value of a secret by the text around it: a parameter, a variable or a field with the name of a secret (`secret-parameter`), a flag (`secret-flag`), the password of a URL (`url-password`), an `Authorization` header (`authorization`) and the user option of curl (`user-password`). A match is the value only, so the name stays.
+- `isSecretName(name)` tells if a name is the name of a secret, by the same rule.
+- A shape can give the span of a part of its match, with a group with the name `secret`. The shapes of `SECRET_SHAPES` have no such group, so their matches do not change.
+- The default shapes of `findSecretShapes` and `redactSecretShapes` do not change. A caller adds `CONTEXT_SHAPES` to its list.
+- headroom redacts the command lines in its logs with these shapes after this version is on npm.
+- The limit of the entry `./redact` is 2400 bytes, predicted before the code. The measure is 2275 bytes.
+
+Runtime dependencies: no change against `0.0.11` (none).
+
 ## 0.0.11
 
 PATCH: a new export before 1.0. The new entry `@mark1russell7/text/english` has `countOf` and the new `listOf`.
