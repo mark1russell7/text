@@ -142,7 +142,7 @@ export interface PadOptions {
 }
 
 ### build/length.d.ts#TextBoundary
-export type TextBoundary = "code-point" | "grapheme";
+export type TextBoundary = "code-point" | "grapheme" | "word";
 
 ### build/length.d.ts#TextUnit
 export type TextUnit = "code-unit" | "code-point" | "grapheme";

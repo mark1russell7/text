@@ -1,7 +1,7 @@
 /**
  * This module has three functions for a text: its length in a unit, a cut to a length and padding to a width. The
  * unit is a UTF-16 code unit, a Unicode code point or a grapheme. A grapheme is one character as a person sees it, for
- * example a letter with an accent, a flag or an emoji sequence.
+ * example a letter with an accent, a flag or an emoji sequence. A cut can also keep each word whole.
  */
 
 /**
@@ -11,10 +11,11 @@
 export type TextUnit = "code-unit" | "code-point" | "grapheme";
 
 /**
- * The smallest part of a text that a cut or a fill keeps whole. The function uses the larger of this part and the unit,
- * so the unit `grapheme` keeps each grapheme whole with each boundary.
+ * The smallest part of a text that a cut or a fill keeps whole. A `word` part is the text between two word boundaries
+ * of Unicode (UAX #29): a word, a run of white space or a punctuation mark. The function uses the larger of this part
+ * and the unit, so the unit `grapheme` keeps each grapheme whole with each boundary.
  */
-export type TextBoundary = "code-point" | "grapheme";
+export type TextBoundary = "code-point" | "grapheme" | "word";
 
 /** The options of `truncate`. */
 export interface TruncateOptions {
@@ -41,12 +42,20 @@ export interface PadOptions {
   readonly side?: "start" | "end" | "both";
 }
 
-let segmenter: Intl.Segmenter | undefined;
+const segmenters: { grapheme?: Intl.Segmenter; word?: Intl.Segmenter } = {};
 
 /** This function gives the parts of a text at a boundary, in their order. */
 function* partsOf(text: string, boundary: TextBoundary): Generator<string> {
   if (boundary === "code-point") yield* text;
-  else for (const { segment } of (segmenter ??= new Intl.Segmenter(undefined, { granularity: "grapheme" })).segment(text)) yield segment;
+  else for (const { segment } of (segmenters[boundary] ??= new Intl.Segmenter(undefined, { granularity: boundary })).segment(text)) yield segment;
+}
+
+/** This function gives the count of units in a part of a text, with no check of the unit. */
+function sizeOf(part: string, unit: TextUnit): number {
+  if (unit === "code-unit") return part.length;
+  let count = 0;
+  for (const _ of partsOf(part, unit)) count += 1;
+  return count;
 }
 
 /** This function stops a bad option with a `RangeError` and its message. */
@@ -62,8 +71,8 @@ function checkCount(value: number, name: string): void {
 /** This function stops a unit and a boundary that are not in their types, and gives the boundary to use. */
 function boundaryOf(unit: TextUnit, boundary: TextBoundary): TextBoundary {
   check(unit === "code-unit" || unit === "code-point" || unit === "grapheme", `unit is ${String(unit)}, not code-unit, code-point or grapheme`);
-  check(boundary === "code-point" || boundary === "grapheme", `boundary is ${String(boundary)}, not code-point or grapheme`);
-  return unit === "grapheme" ? unit : boundary;
+  check(boundary === "code-point" || boundary === "grapheme" || boundary === "word", `boundary is ${String(boundary)}, not code-point, grapheme or word`);
+  return unit === "grapheme" && boundary === "code-point" ? unit : boundary;
 }
 
 /**
@@ -74,7 +83,8 @@ function endOf(text: string, room: number, unit: TextUnit, boundary: TextBoundar
   let size = 0;
   let end = 0;
   for (const part of partsOf(text, boundary)) {
-    size += unit === "code-unit" ? part.length : unit === "code-point" ? [...part].length : 1;
+    // A part of the boundary of the unit has one unit. A word part has one or more units.
+    size += unit !== "code-unit" && unit === boundary ? 1 : sizeOf(part, unit);
     if (size > room) break;
     end += part.length;
   }
@@ -96,10 +106,7 @@ function endOf(text: string, room: number, unit: TextUnit, boundary: TextBoundar
  */
 export function textLength(text: string, unit: TextUnit = "code-unit"): number {
   boundaryOf(unit, "code-point");
-  if (unit === "code-unit") return text.length;
-  let count = 0;
-  for (const _ of partsOf(text, unit)) count += 1;
-  return count;
+  return sizeOf(text, unit);
 }
 
 /**
@@ -114,6 +121,10 @@ export function textLength(text: string, unit: TextUnit = "code-unit"): number {
  *   than `max`.
  * - When the mark has more than `max` units, the result has no mark. It is the start of the text, with `max` units
  *   or fewer.
+ * - With `word`, the cut keeps each word whole. The white space and the punctuation at the end of the cut text go out
+ *   before the mark. When no word fits, the cut keeps the graphemes that fit, as the boundary `grapheme` does.
+ * - The word boundaries come from `Intl.Segmenter` in the locale of the runtime. For a language with no spaces, for
+ *   example Japanese or Thai, the segmenter uses a dictionary.
  *
  * @param text - The text to cut.
  * @param max - The most units in the result. It is an integer of 0 or more.
@@ -128,8 +139,11 @@ export function truncate(text: string, max: number, options: TruncateOptions = {
   // The count of code units is the largest count. Thus a text with `max` code units or fewer fits in each unit.
   if (text.length <= max || (unit !== "code-unit" && endOf(text, max, unit, unit) === text.length)) return text;
   const end = textLength(mark, unit) <= max ? mark : "";
+  const room = max - textLength(end, unit);
+  const start = text.slice(0, endOf(text, room, unit, boundary));
   // A grapheme of the text can join a grapheme of the mark. A join gives fewer graphemes, never more (UAX #29).
-  return text.slice(0, endOf(text, max - textLength(end, unit), unit, boundary)) + end;
+  if (boundary !== "word") return start + end;
+  return (start.replace(/[\s\p{P}]+$/u, "") || text.slice(0, endOf(text, room, unit, "grapheme"))) + end;
 }
 
 /**
