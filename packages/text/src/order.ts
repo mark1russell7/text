@@ -17,8 +17,9 @@ const isLow = (unit: number): boolean => unit >= 0xdc00 && unit <= 0xdfff;
 
 /**
  * This function compares two texts by their Unicode code points. It gives -1, 0 or 1. A surrogate pair is one code point
- * above U+FFFF, and a lone surrogate is its own code point. The order of the code units is different only for a code point
- * above U+FFFF against a code unit from U+E000 to U+FFFF.
+ * above U+FFFF, and a lone surrogate is its own code point. The two orders are different only in one case. At the first code
+ * point that is different, one text has a code point above U+FFFF. The other text has a lone surrogate or a code unit from
+ * U+E000 to U+FFFF at that place.
  */
 export function compareCodePoints(a: string, b: string): number {
   const end = Math.min(a.length, b.length);

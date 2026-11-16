@@ -60,7 +60,7 @@ The two orders are the same in each locale and in each copy of a program. The na
 - `compareCodeUnits(a, b)` compares the UTF-16 code units. The operator `<`, the default sort and canonical JSON (RFC 8785) use this order.
 - `compareCodePoints(a, b)` compares the Unicode code points. A surrogate pair is one code point above U+FFFF.
 
-The two orders are different only for a code point above U+FFFF against a code unit from U+E000 to U+FFFF.
+The two orders are different only in one case. At the first code point that is different, one text has a code point above U+FFFF. The other text has a lone surrogate or a code unit from U+E000 to U+FFFF at that place.
 
 ```ts
 import { compareCodePoints, compareCodeUnits } from "@mark1russell7/text";
