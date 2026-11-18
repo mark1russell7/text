@@ -2,7 +2,7 @@ import { random } from "@mark1russell7/rigor-generators";
 import { describe, expect, it } from "vitest";
 import { strings } from "../test/strings.ts";
 import { searchKey, wordSearch } from "./index.ts";
-import { cosineSimilarity, inverseDocumentFrequency, rankDocuments, searchWords, termVector } from "./search.ts";
+import { cosineSimilarity, inverseDocumentFrequency, rankDocuments, rankerOf, searchWords, termVector } from "./search.ts";
 
 describe("searchKey", () => {
   it("folds the German sharp s, the capital sharp s and SS to ss", () => {
@@ -209,5 +209,30 @@ describe("rankDocuments", () => {
       const b = byIndex(rankDocuments(order.map((index) => corpus[index]!), query), (index) => order[index]!);
       expect(b).toEqual(a);
     }
+  });
+});
+
+describe("rankerOf", () => {
+  it("gives the same scores as rankDocuments for each query, in each form, on 500 seeded corpora", () => {
+    const r = random("text/ranker-of");
+    for (let run = 0; run < 500; run++) {
+      const corpus = corpusOf(r);
+      const form = r.pick(["plain", "smooth"] as const);
+      const rank = rankerOf(corpus, form);
+      for (let q = 0; q < 3; q++) {
+        const query = Array.from({ length: r.int(1, 5) }, () => r.pick(VOCABULARY));
+        expect(rank(query)).toEqual(rankDocuments(corpus, query, form));
+      }
+    }
+  });
+
+  it("keeps the vectors of the corpus at the time of the call", () => {
+    const corpus = [["graph", "topic"], ["release", "gate"]];
+    const rank = rankerOf(corpus);
+    const before = rank(["graph"]);
+    corpus[0] = ["release"];
+    expect(rank(["graph"])).toEqual(before);
+    expect(before.map((score) => score.index)).toEqual([0, 1]);
+    expect(before[0]?.score).toBeGreaterThan(0);
   });
 });

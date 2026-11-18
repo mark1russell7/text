@@ -3,7 +3,8 @@
  * in any order. The case of the letters is not significant.
  *
  * The module also has a ranked search: the words of a text (`searchWords`), TF-IDF weights and the cosine similarity.
- * `rankDocuments` puts the documents of a corpus in order for a query. Each function has no I/O.
+ * `rankDocuments` puts the documents of a corpus in order for a query. `rankerOf` does this for many queries on one corpus.
+ * Each function has no I/O.
  */
 
 /** The small final sigma. Unicode case folding changes it to the small sigma, so a word agrees in each position. */
@@ -175,7 +176,25 @@ export interface DocumentScore {
  * @returns The score of each document, best first.
  */
 export function rankDocuments(corpus: readonly (readonly string[])[], query: readonly string[], form: IdfForm = "plain"): DocumentScore[] {
+  return rankerOf(corpus, form)(query);
+}
+
+/**
+ * This function makes a ranker for one corpus. It computes the IDF and the vector of each document one time. It has no I/O.
+ *
+ * - For each query, the ranker gives the same scores as `rankDocuments(corpus, query, form)`.
+ * - A query costs one vector and one cosine for each document. Use the ranker when many queries search one corpus.
+ * - The ranker keeps the vectors of the corpus at the time of the call. A later change of the corpus does not change it.
+ *
+ * @param corpus - The documents, each as a list of words.
+ * @param form - The form of the IDF. The default is `plain`.
+ * @returns A function that gives the score of each document for a query, best first.
+ */
+export function rankerOf(corpus: readonly (readonly string[])[], form: IdfForm = "plain"): (query: readonly string[]) => DocumentScore[] {
   const idf = inverseDocumentFrequency(corpus, form);
-  const q = termVector(query, idf);
-  return corpus.map((document, index) => ({ index, score: cosineSimilarity(q, termVector(document, idf)) })).sort((a, b) => b.score - a.score);
+  const vectors = corpus.map((document) => termVector(document, idf));
+  return (query) => {
+    const q = termVector(query, idf);
+    return vectors.map((vector, index) => ({ index, score: cosineSimilarity(q, vector) })).sort((a, b) => b.score - a.score);
+  };
 }
