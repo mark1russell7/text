@@ -1,5 +1,19 @@
 # Changelog of @mark1russell7/text
 
+## 0.0.16
+
+PATCH: a new export before 1.0. The new entry `@mark1russell7/text/references` has `decodeReferences`. The root entry and the entry `./html` do not change.
+
+- `decodeReferences(text)` decodes the character references of HTML content, as the tokenizer of the HTML Living Standard does.
+- The named references come from the table of the standard, with its 2231 names. The longest name wins, and the 106 legacy names are also correct with no semicolon.
+- A decimal or hexadecimal reference gives its code point. The value 0, a surrogate and a value above `0x10FFFF` give U+FFFD, and `0x80` to `0x9F` give the characters of windows-1252.
+- An ampersand with no reference stays as text. The function does not throw, and it is linear in the length of the text.
+- The script `scripts/html-references.ts` makes the table module `src/html-references.ts` from `entities.json` of the standard (CC BY 4.0).
+- The first prediction put the decoder in `./html`, with a limit of 9000 bytes. The entry had 9425 bytes in CI. So the decoder is in its own entry, `./references`, with a limit of 9000 bytes. The limit of `./html` stays at 1100 bytes.
+- The first users are the alert sources with HTML descriptions in a feed. News feeds need the same function.
+
+Runtime dependencies: no change against `0.0.15` (none).
+
 ## 0.0.15
 
 PATCH: a new export before 1.0. The entry `@mark1russell7/text/search` has `rankerOf`.

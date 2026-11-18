@@ -62,6 +62,10 @@ HtmlScan: build/html.d.ts#HtmlScan
 HtmlScanOptions: build/html.d.ts#HtmlScanOptions
 scanHtml: build/html.d.ts#scanHtml
 
+## ./references (build/references.d.ts): names
+
+decodeReferences: build/references.d.ts#decodeReferences
+
 ## ./english (build/english.d.ts): names
 
 ListOptions: build/english.d.ts#ListOptions
@@ -245,6 +249,9 @@ export declare function redactSecretShapes(text: string, options?: RedactShapeOp
 
 ### build/redact.d.ts#redactSecrets
 export declare function redactSecrets(text: string, secrets: readonly Secret[], options?: RedactOptions): string;
+
+### build/references.d.ts#decodeReferences
+export declare function decodeReferences(text: string): string;
 
 ### build/search.d.ts#DocumentScore
 export interface DocumentScore {

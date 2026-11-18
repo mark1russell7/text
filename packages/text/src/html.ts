@@ -22,6 +22,7 @@ export interface HtmlScan {
   /**
    * The text of the HTML outside the tags, the comments and the skipped elements. Each tag, comment and skipped element
    * gives one space, so two words in two elements stay two words. The white space and the character references stay as in the HTML.
+   * The function `decodeReferences` of the entry `./references` decodes the character references.
    */
   readonly text: string;
   /** The start tags outside the comments and the skipped elements, in the order of the HTML. The start tag of a skipped element is in the list. */

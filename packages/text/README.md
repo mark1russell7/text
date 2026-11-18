@@ -288,6 +288,27 @@ elements.some((element) => element.name === "link" && element.attributes["rel"] 
 scanHtml("<html><head><title>T</title></head><body><noscript>On</noscript>Body</body></html>", { skip: ["head", "script", "style", "template", "noscript"] }).text; // "    Body  "
 ```
 
+### The decode of character references
+
+`decodeReferences(text)` of the entry `@mark1russell7/text/references` decodes the character references of HTML content, as the tokenizer of the HTML Living Standard does. Use it on the `text` of a scan.
+
+- A named reference gets its value from the table of the standard, with its 2231 names. The longest name wins.
+- A legacy name, for example `&amp` or `&nbsp`, is also correct with no semicolon. Thus `&notit;` gives `¬it;`.
+- A decimal or hexadecimal reference gives its code point. The semicolon after the digits is optional.
+- The value 0, a surrogate and a value above `0x10FFFF` give U+FFFD. The values `0x80` to `0x9F` give the characters of windows-1252.
+- An ampersand with no reference after it stays as text. The function changes no other character.
+- The function does not throw, and it is linear in the length of the text.
+
+```ts
+import { scanHtml } from "@mark1russell7/text/html";
+import { decodeReferences } from "@mark1russell7/text/references";
+
+decodeReferences("We&rsquo;re on it &ndash; &#8217;&#x2019; &copy2026 &notit;"); // "We’re on it – ’’ ©2026 ¬it;"
+decodeReferences(scanHtml("<p>Fish &amp; chips</p>").text); // " Fish & chips "
+```
+
+The table comes from `entities.json` of the standard, under the license CC BY 4.0. The script `scripts/html-references.ts` makes the module `src/html-references.ts` from it. The table is in the entry `./references`. Thus a bundle that imports only `scanHtml` does not get the table.
+
 ## The copies that this package replaces
 
 The tests run 58 copies of these functions from other repositories of the owner. Each copy comes from a list of the duplication atlas, at a pinned commit. The file `test/copies.json` has each copy, and `test/differences.ts` has each difference from the function of this package, with its reason. A copy that is not in the list gives the same output on each of the 1000 test strings.
@@ -311,6 +332,8 @@ The tests also examine 18 copies of a cut with a mark, from a later list of the 
 - `partsAt` counts in code units, as `String.prototype.slice` does. A range can cut a surrogate pair or a grapheme.
 - The three functions count units, not the width on a screen. A wide character, for example 日, is one unit, as a narrow character is.
 - `scanHtml` does not make a tree. It does not close an element with no end tag, and it does not move an element as a browser does.
-- `scanHtml` keeps the character references of the text and of each attribute value. Thus `&amp;` stays as five characters.
+- `scanHtml` keeps the character references of the text and of each attribute value. Thus `&amp;` stays as five characters. `decodeReferences` decodes them.
+- `decodeReferences` uses the rule of element content. In an attribute value, a legacy name with no semicolon before `=`, a letter or a digit stays as text, for example `&copy=`.
+- `decodeReferences` does not change the other characters. The tokenizer also changes a NUL character and a carriage return, but this function does not.
 - In `scanHtml`, a comment or a skipped element with no end is text. A browser hides the rest of the page in that case.
 - In `scanHtml`, a tag in a word also gives a space. Thus `a<b>c</b>` gives the text `a c `.
