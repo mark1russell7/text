@@ -6,6 +6,7 @@ import * as length from "./length.ts";
 import * as order from "./order.ts";
 import * as parts from "./parts.ts";
 import * as redact from "./redact.ts";
+import * as search from "./search.ts";
 
 describe("the entries", () => {
   it("export the names of the API report", () => {
@@ -35,5 +36,6 @@ describe("the entries", () => {
     expect(Object.keys(order).sort()).toEqual(["compareCodePoints", "compareCodeUnits"]);
     expect(Object.keys(html).sort()).toEqual(["HTML_SKIP", "scanHtml"]);
     expect(Object.keys(english).sort()).toEqual(["countOf", "listOf"]);
+    expect(Object.keys(search).sort()).toEqual(["cosineSimilarity", "inverseDocumentFrequency", "rankDocuments", "searchKey", "searchWords", "termVector", "wordSearch"]);
   });
 });

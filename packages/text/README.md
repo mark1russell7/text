@@ -66,6 +66,22 @@ wordSearch("istanbul")("İSTANBUL"); // false: "İ" keeps its dot as U+0307
 searchKey("ﬁle"); // "file"
 ```
 
+### A ranked search
+
+The entry `@mark1russell7/text/search` also ranks the documents of a corpus for a query with TF-IDF and the cosine similarity. Each function is pure and has no I/O.
+
+- `searchWords(text, options)` gives the search keys of the words of a text (Unicode Standard Annex 29). The options remove stop words, refuse words and change words.
+- `inverseDocumentFrequency(documents, form)` gives the IDF of each term. The form `plain` is ln(N / df), so a term in each document has the weight 0. The form `smooth` is ln((N + 1) / (df + 1)) + 1.
+- `termVector(words, idf)` gives the weights (1 + ln(tf)) × idf with a length of 1. `cosineSimilarity(a, b)` compares two vectors.
+- `rankDocuments(corpus, query, form)` gives the score of each document, best first. A tie keeps the order of the corpus.
+
+```ts
+import { rankDocuments, searchWords } from "@mark1russell7/text/search";
+
+const corpus = ["The release gate", "The topic graph of the site", "A graph page"].map((text) => searchWords(text));
+rankDocuments(corpus, searchWords("topic graph")); // [{ index: 1, … }, { index: 2, … }, { index: 0, score: 0 }]
+```
+
 ## The order of texts
 
 The entry `@mark1russell7/text/order` has two orders of texts. Each order is the same in each locale and in each copy of a program. The name of each function tells its unit.
