@@ -174,10 +174,17 @@ describe("termVector and cosineSimilarity", () => {
       const b = termVector(r.pick(corpus), idf);
       const ab = cosineSimilarity(a, b);
       expect(ab).toBeGreaterThanOrEqual(0);
-      expect(ab).toBeLessThanOrEqual(1 + 1e-12);
+      expect(ab).toBeLessThanOrEqual(1);
       expect(cosineSimilarity(b, a)).toBeCloseTo(ab, 12);
       if (a.size > 0) expect(cosineSimilarity(a, a)).toBeCloseTo(1, 12);
+      expect(cosineSimilarity(a, a)).toBeLessThanOrEqual(1);
     }
+  });
+
+  it("clamps a sum over 1 to exactly 1, so a caller can compare a score with 1", () => {
+    const v = new Map([["a", 0.6], ["b", 0.8000000000000002]]);
+    expect(0.6 * 0.6 + 0.8000000000000002 * 0.8000000000000002).toBeGreaterThan(1);
+    expect(cosineSimilarity(v, v)).toBe(1);
   });
 });
 

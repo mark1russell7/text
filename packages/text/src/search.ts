@@ -56,6 +56,9 @@ export interface WordOptions {
   readonly stem?: (word: string) => string;
 }
 
+/** The word segmenter of `searchWords`. A segmenter is costly to make, so the module makes it one time, at the first use. */
+let wordSegmenter: Intl.Segmenter | undefined;
+
 /**
  * This function gives the words of a text, in their order, for a ranked search. The function does these steps:
  *
@@ -71,7 +74,8 @@ export interface WordOptions {
  */
 export function searchWords(text: string, options: WordOptions = {}): string[] {
   const out: string[] = [];
-  for (const segment of new Intl.Segmenter("en", { granularity: "word" }).segment(searchKey(text))) {
+  wordSegmenter ??= new Intl.Segmenter("en", { granularity: "word" });
+  for (const segment of wordSegmenter.segment(searchKey(text))) {
     if (!segment.isWordLike) continue;
     const word = segment.segment;
     if (options.stop?.has(word) || (options.keep && !options.keep(word))) continue;
@@ -137,16 +141,17 @@ export function termVector(words: readonly string[], idf: ReadonlyMap<string, nu
 /**
  * This function gives the cosine similarity of two vectors with a length of 1, from `termVector`. The similarity is the
  * sum of the products of the weights of each term in the two vectors. It is 0 when the vectors have no term in common.
+ * The function clamps the sum to 0 to 1. Thus a vector with itself gives exactly 1, and not 1 plus a rounding error.
  *
  * @param a - The first vector.
  * @param b - The second vector.
- * @returns The similarity, from 0 to 1 for vectors of `termVector`.
+ * @returns The similarity, from 0 to 1.
  */
 export function cosineSimilarity(a: ReadonlyMap<string, number>, b: ReadonlyMap<string, number>): number {
   const [small, large] = a.size < b.size ? [a, b] : [b, a];
   let sum = 0;
   for (const [term, weight] of small) sum += weight * (large.get(term) ?? 0);
-  return sum;
+  return Math.min(1, Math.max(0, sum));
 }
 
 /** The score of one document of a corpus for a query. */
