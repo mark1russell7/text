@@ -1,5 +1,15 @@
 # Changelog of @mark1russell7/text
 
+## 0.0.14
+
+PATCH: new exports before 1.0. The new entry `@mark1russell7/text/search` has a ranked search with TF-IDF. The root entry does not change.
+
+- `searchWords(text, options)` gives the search keys of the words of a text. The options are stop words, a test of a word and a stem.
+- `inverseDocumentFrequency(documents, form)` gives the IDF of each term, in the form `plain` (the default) or `smooth`.
+- `termVector(words, idf)` and `cosineSimilarity(a, b)` give the TF-IDF vector of a text and the similarity of two vectors.
+- `rankDocuments(corpus, query, form)` ranks the documents of a corpus for a query.
+- Property tests on seeded corpora: the order of the documents does not change a weight or a score. A term in each document has the plain weight 0.
+
 ## 0.0.12
 
 PATCH: new exports before 1.0. The entry `@mark1russell7/text/redact` finds a secret by its context.

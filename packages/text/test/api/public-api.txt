@@ -14,8 +14,8 @@ escapeMarkdown: build/index.d.ts#escapeMarkdown
 escapeRegExp: build/index.d.ts#escapeRegExp
 escapeWorkflowData: build/index.d.ts#escapeWorkflowData
 escapeWorkflowProperty: build/index.d.ts#escapeWorkflowProperty
-searchKey: build/index.d.ts#searchKey
-wordSearch: build/index.d.ts#wordSearch
+searchKey: build/search.d.ts#searchKey
+wordSearch: build/search.d.ts#wordSearch
 
 ## ./redact (build/redact.d.ts): names
 
@@ -67,6 +67,19 @@ scanHtml: build/html.d.ts#scanHtml
 ListOptions: build/english.d.ts#ListOptions
 countOf: build/english.d.ts#countOf
 listOf: build/english.d.ts#listOf
+
+## ./search (build/search.d.ts): names
+
+DocumentScore: build/search.d.ts#DocumentScore
+IdfForm: build/search.d.ts#IdfForm
+WordOptions: build/search.d.ts#WordOptions
+cosineSimilarity: build/search.d.ts#cosineSimilarity
+inverseDocumentFrequency: build/search.d.ts#inverseDocumentFrequency
+rankDocuments: build/search.d.ts#rankDocuments
+searchKey: build/search.d.ts#searchKey
+searchWords: build/search.d.ts#searchWords
+termVector: build/search.d.ts#termVector
+wordSearch: build/search.d.ts#wordSearch
 
 ## Declarations
 
@@ -126,12 +139,6 @@ export declare function escapeWorkflowData(text: string): string;
 
 ### build/index.d.ts#escapeWorkflowProperty
 export declare function escapeWorkflowProperty(text: string): string;
-
-### build/index.d.ts#searchKey
-export declare function searchKey(text: string): string;
-
-### build/index.d.ts#wordSearch
-export declare function wordSearch(query: string): (text: string) => boolean;
 
 ### build/length.d.ts#PadOptions
 export interface PadOptions {
@@ -237,3 +244,40 @@ export declare function redactSecretShapes(text: string, options?: RedactShapeOp
 
 ### build/redact.d.ts#redactSecrets
 export declare function redactSecrets(text: string, secrets: readonly Secret[], options?: RedactOptions): string;
+
+### build/search.d.ts#DocumentScore
+export interface DocumentScore {
+  readonly index: number;
+  readonly score: number;
+}
+
+### build/search.d.ts#IdfForm
+export type IdfForm = "plain" | "smooth";
+
+### build/search.d.ts#WordOptions
+export interface WordOptions {
+  readonly stop?: ReadonlySet<string>;
+  readonly keep?: (word: string) => boolean;
+  readonly stem?: (word: string) => string;
+}
+
+### build/search.d.ts#cosineSimilarity
+export declare function cosineSimilarity(a: ReadonlyMap<string, number>, b: ReadonlyMap<string, number>): number;
+
+### build/search.d.ts#inverseDocumentFrequency
+export declare function inverseDocumentFrequency(documents: readonly (readonly string[])[], form?: IdfForm): Map<string, number>;
+
+### build/search.d.ts#rankDocuments
+export declare function rankDocuments(corpus: readonly (readonly string[])[], query: readonly string[], form?: IdfForm): DocumentScore[];
+
+### build/search.d.ts#searchKey
+export declare function searchKey(text: string): string;
+
+### build/search.d.ts#searchWords
+export declare function searchWords(text: string, options?: WordOptions): string[];
+
+### build/search.d.ts#termVector
+export declare function termVector(words: readonly string[], idf: ReadonlyMap<string, number>): Map<string, number>;
+
+### build/search.d.ts#wordSearch
+export declare function wordSearch(query: string): (text: string) => boolean;

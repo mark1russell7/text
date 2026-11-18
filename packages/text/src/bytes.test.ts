@@ -14,7 +14,9 @@ import { describe, expect, it } from "vitest";
 // before its first measure. The limit of the entry `./html` is 1100 bytes, predicted before its first measure. Version
 // 0.0.11 puts the list join in the entry `./english`, because the root entry has 663 of its 700 bytes. The limit of
 // `./english` is 300 bytes, predicted before its first measure. Version 0.0.12 adds
-// the shapes of a secret by its context to `./redact`. The prediction before the code: at most 2400 bytes.
+// the shapes of a secret by its context to `./redact`. The prediction before the code: at most 2400 bytes. Version 0.0.14
+// puts the ranked search with TF-IDF in the entry `./search`, because the root entry has 663 of its 700 bytes. The limit of
+// `./search` is 900 bytes, predicted before its first measure.
 const ENTRIES = [
   { entry: "root", file: "./index.ts", limit: 700 },
   { entry: "redact", file: "./redact.ts", limit: 2400 },
@@ -23,6 +25,7 @@ const ENTRIES = [
   { entry: "order", file: "./order.ts", limit: 400 },
   { entry: "html", file: "./html.ts", limit: 1100 },
   { entry: "english", file: "./english.ts", limit: 300 },
+  { entry: "search", file: "./search.ts", limit: 900 },
 ] as const;
 
 describe("the bytes of each entry", () => {

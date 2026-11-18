@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/package",
   "name": "@mark1russell7/text",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "description": "Plain text helpers: the escapes for HTML, attributes, patterns, Markdown and workflow commands, English word forms (countOf, listOf), a word search (wordSearch), the text of a thrown value (errorMessage), the orders of texts by code units and by code points (compareCodeUnits, compareCodePoints), the removal of secrets (redactSecrets) and the shapes of tokens and of secrets by their context (findSecretShapes, redactSecretShapes, findSecretShapesInValue, CONTEXT_SHAPES, isSecretName), and lengths in code units, code points and graphemes with truncation and padding (textLength, truncate, pad), the marked parts of a text (partsAt, partsOf), and a scan of HTML for its text and its start tags (scanHtml).",
   "keywords": [
     "text",
@@ -43,6 +43,7 @@
     "./order": "./src/order.ts",
     "./html": "./src/html.ts",
     "./english": "./src/english.ts",
+    "./search": "./src/search.ts",
     "./package.json": "./package.json"
   },
   "files": [
@@ -85,6 +86,10 @@
       "./english": {
         "types": "./build/english.d.ts",
         "default": "./build/english.js"
+      },
+      "./search": {
+        "types": "./build/search.d.ts",
+        "default": "./build/search.js"
       },
       "./package.json": "./package.json"
     }
