@@ -76,6 +76,7 @@ WordOptions: build/search.d.ts#WordOptions
 cosineSimilarity: build/search.d.ts#cosineSimilarity
 inverseDocumentFrequency: build/search.d.ts#inverseDocumentFrequency
 rankDocuments: build/search.d.ts#rankDocuments
+rankerOf: build/search.d.ts#rankerOf
 searchKey: build/search.d.ts#searchKey
 searchWords: build/search.d.ts#searchWords
 termVector: build/search.d.ts#termVector
@@ -269,6 +270,9 @@ export declare function inverseDocumentFrequency(documents: readonly (readonly s
 
 ### build/search.d.ts#rankDocuments
 export declare function rankDocuments(corpus: readonly (readonly string[])[], query: readonly string[], form?: IdfForm): DocumentScore[];
+
+### build/search.d.ts#rankerOf
+export declare function rankerOf(corpus: readonly (readonly string[])[], form?: IdfForm): (query: readonly string[]) => DocumentScore[];
 
 ### build/search.d.ts#searchKey
 export declare function searchKey(text: string): string;

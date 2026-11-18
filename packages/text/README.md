@@ -74,6 +74,7 @@ The entry `@mark1russell7/text/search` also ranks the documents of a corpus for 
 - `inverseDocumentFrequency(documents, form)` gives the IDF of each term. The form `plain` is ln(N / df), so a term in each document has the weight 0. The form `smooth` is ln((N + 1) / (df + 1)) + 1.
 - `termVector(words, idf)` gives the weights (1 + ln(tf)) × idf with a length of 1. `cosineSimilarity(a, b)` compares two vectors.
 - `rankDocuments(corpus, query, form)` gives the score of each document, best first. A tie keeps the order of the corpus.
+- `rankerOf(corpus, form)` computes the IDF and the vectors of a corpus one time. It gives a function of a query with the same scores as `rankDocuments`.
 
 ```ts
 import { rankDocuments, searchWords } from "@mark1russell7/text/search";

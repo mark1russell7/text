@@ -1,5 +1,13 @@
 # Changelog of @mark1russell7/text
 
+## 0.0.15
+
+PATCH: a new export before 1.0. The entry `@mark1russell7/text/search` has `rankerOf`.
+
+- `rankerOf(corpus, form)` computes the IDF and the vector of each document one time. It gives a function `(query) => DocumentScore[]`.
+- For each query, the ranker gives the same scores as `rankDocuments(corpus, query, form)`. A property test on 500 seeded corpora holds this.
+- `rankDocuments` uses `rankerOf`, so the two functions share one path. Its results do not change.
+
 ## 0.0.14
 
 PATCH: new exports before 1.0. The new entry `@mark1russell7/text/search` has a ranked search with TF-IDF. The root entry does not change.
