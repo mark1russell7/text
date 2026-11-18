@@ -290,7 +290,7 @@ scanHtml("<html><head><title>T</title></head><body><noscript>On</noscript>Body</
 
 ### The decode of character references
 
-`decodeReferences(text)` decodes the character references of HTML content, as the tokenizer of the HTML Living Standard does. Use it on the `text` of a scan.
+`decodeReferences(text)` of the entry `@mark1russell7/text/references` decodes the character references of HTML content, as the tokenizer of the HTML Living Standard does. Use it on the `text` of a scan.
 
 - A named reference gets its value from the table of the standard, with its 2231 names. The longest name wins.
 - A legacy name, for example `&amp` or `&nbsp`, is also correct with no semicolon. Thus `&notit;` gives `¬it;`.
@@ -300,13 +300,14 @@ scanHtml("<html><head><title>T</title></head><body><noscript>On</noscript>Body</
 - The function does not throw, and it is linear in the length of the text.
 
 ```ts
-import { decodeReferences, scanHtml } from "@mark1russell7/text/html";
+import { scanHtml } from "@mark1russell7/text/html";
+import { decodeReferences } from "@mark1russell7/text/references";
 
 decodeReferences("We&rsquo;re on it &ndash; &#8217;&#x2019; &copy2026 &notit;"); // "We’re on it – ’’ ©2026 ¬it;"
 decodeReferences(scanHtml("<p>Fish &amp; chips</p>").text); // " Fish & chips "
 ```
 
-The table comes from `entities.json` of the standard, under the license CC BY 4.0. The script `scripts/html-references.ts` makes the module `src/html-references.ts` from it. A bundle that imports only `scanHtml` does not get the table.
+The table comes from `entities.json` of the standard, under the license CC BY 4.0. The script `scripts/html-references.ts` makes the module `src/html-references.ts` from it. The table is in the entry `./references`. Thus a bundle that imports only `scanHtml` does not get the table.
 
 ## The copies that this package replaces
 

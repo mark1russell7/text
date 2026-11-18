@@ -3,7 +3,8 @@ import { describe, expect, it } from "vitest";
 import { strings } from "../test/strings.ts";
 import { escapeAttribute, escapeHtml } from "./escape.ts";
 import { NAMED_REFERENCES } from "./html-references.ts";
-import { decodeReferences, HTML_SKIP, scanHtml, type HtmlScan } from "./html.ts";
+import { HTML_SKIP, scanHtml, type HtmlScan } from "./html.ts";
+import { decodeReferences } from "./references.ts";
 
 /** This function gives the words of the text of a scan, with one space between them. */
 const words = (scan: HtmlScan): string => scan.text.replace(/\s+/g, " ").trim();
@@ -127,7 +128,7 @@ const TABLE: ReadonlyArray<{ name: string; value: string; legacy: boolean }> = (
     const [first = "", second] = head.split("+");
     point += parseInt(first, 36);
     const value = String.fromCodePoint(point, ...(second === undefined ? [] : [parseInt(second, 36)]));
-    for (const entry of names.split(" ")) rows.push({ name: entry.replace("*", ""), value, legacy: entry.endsWith("*") });
+    for (const entry of names.split(" ")) rows.push({ name: entry.endsWith("*") ? entry.slice(0, -1) : entry, value, legacy: entry.endsWith("*") });
   }
   return rows;
 })();

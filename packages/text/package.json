@@ -43,6 +43,7 @@
     "./parts": "./src/parts.ts",
     "./order": "./src/order.ts",
     "./html": "./src/html.ts",
+    "./references": "./src/references.ts",
     "./english": "./src/english.ts",
     "./search": "./src/search.ts",
     "./package.json": "./package.json"
@@ -83,6 +84,10 @@
       "./html": {
         "types": "./build/html.d.ts",
         "default": "./build/html.js"
+      },
+      "./references": {
+        "types": "./build/references.d.ts",
+        "default": "./build/references.js"
       },
       "./english": {
         "types": "./build/english.d.ts",

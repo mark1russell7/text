@@ -60,8 +60,11 @@ HTML_SKIP: build/html.d.ts#HTML_SKIP
 HtmlElement: build/html.d.ts#HtmlElement
 HtmlScan: build/html.d.ts#HtmlScan
 HtmlScanOptions: build/html.d.ts#HtmlScanOptions
-decodeReferences: build/html.d.ts#decodeReferences
 scanHtml: build/html.d.ts#scanHtml
+
+## ./references (build/references.d.ts): names
+
+decodeReferences: build/references.d.ts#decodeReferences
 
 ## ./english (build/english.d.ts): names
 
@@ -117,9 +120,6 @@ export interface HtmlScan {
 export interface HtmlScanOptions {
   readonly skip?: readonly string[];
 }
-
-### build/html.d.ts#decodeReferences
-export declare function decodeReferences(text: string): string;
 
 ### build/html.d.ts#scanHtml
 export declare function scanHtml(html: string, options?: HtmlScanOptions): HtmlScan;
@@ -249,6 +249,9 @@ export declare function redactSecretShapes(text: string, options?: RedactShapeOp
 
 ### build/redact.d.ts#redactSecrets
 export declare function redactSecrets(text: string, secrets: readonly Secret[], options?: RedactOptions): string;
+
+### build/references.d.ts#decodeReferences
+export declare function decodeReferences(text: string): string;
 
 ### build/search.d.ts#DocumentScore
 export interface DocumentScore {
