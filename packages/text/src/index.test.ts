@@ -34,7 +34,7 @@ describe("the entries", () => {
     expect(Object.keys(length).sort()).toEqual(["pad", "textLength", "truncate"]);
     expect(Object.keys(parts).sort()).toEqual(["partsAt", "partsOf"]);
     expect(Object.keys(order).sort()).toEqual(["compareCodePoints", "compareCodeUnits"]);
-    expect(Object.keys(html).sort()).toEqual(["HTML_SKIP", "scanHtml"]);
+    expect(Object.keys(html).sort()).toEqual(["HTML_SKIP", "decodeReferences", "scanHtml"]);
     expect(Object.keys(english).sort()).toEqual(["countOf", "listOf"]);
     expect(Object.keys(search).sort()).toEqual(["cosineSimilarity", "inverseDocumentFrequency", "rankDocuments", "rankerOf", "searchKey", "searchWords", "termVector", "wordSearch"]);
   });

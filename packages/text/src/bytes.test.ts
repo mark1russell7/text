@@ -16,23 +16,30 @@ import { describe, expect, it } from "vitest";
 // `./english` is 300 bytes, predicted before its first measure. Version 0.0.12 adds
 // the shapes of a secret by its context to `./redact`. The prediction before the code: at most 2400 bytes. Version 0.0.14
 // puts the ranked search with TF-IDF in the entry `./search`, because the root entry has 663 of its 700 bytes. The limit of
-// `./search` is 900 bytes, predicted before its first measure.
+// `./search` is 900 bytes, predicted before its first measure. Version 0.0.16 adds `decodeReferences` and the table of
+// the named character references to `./html`. The table alone has about 7400 bytes. The prediction, made after that
+// measure and before the first measure of the entry: at most 9000 bytes. A bundle with only `scanHtml` and `HTML_SKIP`
+// has no table, so its limit stays at 1100 bytes.
 const ENTRIES = [
   { entry: "root", file: "./index.ts", limit: 700 },
   { entry: "redact", file: "./redact.ts", limit: 2400 },
   { entry: "length", file: "./length.ts", limit: 850 },
   { entry: "parts", file: "./parts.ts", limit: 450 },
   { entry: "order", file: "./order.ts", limit: 400 },
-  { entry: "html", file: "./html.ts", limit: 1100 },
+  { entry: "html", file: "./html.ts", limit: 9000 },
+  { entry: "html with no decoder", contents: `export { HTML_SKIP, scanHtml } from "./html.ts";`, limit: 1100 },
   { entry: "english", file: "./english.ts", limit: 300 },
   { entry: "search", file: "./search.ts", limit: 900 },
-] as const;
+] as const satisfies ReadonlyArray<{ entry: string; file?: string; contents?: string; limit: number }>;
 
 describe("the bytes of each entry", () => {
-  for (const { entry, file, limit } of ENTRIES) {
+  for (const item of ENTRIES) {
+    const { entry, limit } = item;
     it(`${entry}: at most ${limit} bytes, bundled and minified by esbuild, at gzip level 9`, () => {
       const result = buildSync({
-        entryPoints: [fileURLToPath(new URL(file, import.meta.url))],
+        ...("file" in item
+          ? { entryPoints: [fileURLToPath(new URL(item.file, import.meta.url))] }
+          : { stdin: { contents: item.contents, resolveDir: fileURLToPath(new URL(".", import.meta.url)), loader: "ts" as const } }),
         bundle: true,
         minify: true,
         treeShaking: true,

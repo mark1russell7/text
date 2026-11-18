@@ -60,6 +60,7 @@ HTML_SKIP: build/html.d.ts#HTML_SKIP
 HtmlElement: build/html.d.ts#HtmlElement
 HtmlScan: build/html.d.ts#HtmlScan
 HtmlScanOptions: build/html.d.ts#HtmlScanOptions
+decodeReferences: build/html.d.ts#decodeReferences
 scanHtml: build/html.d.ts#scanHtml
 
 ## ./english (build/english.d.ts): names
@@ -116,6 +117,9 @@ export interface HtmlScan {
 export interface HtmlScanOptions {
   readonly skip?: readonly string[];
 }
+
+### build/html.d.ts#decodeReferences
+export declare function decodeReferences(text: string): string;
 
 ### build/html.d.ts#scanHtml
 export declare function scanHtml(html: string, options?: HtmlScanOptions): HtmlScan;
