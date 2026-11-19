@@ -1,6 +1,6 @@
 # @mark1russell7/text
 
-Plain text helpers in nine groups: the escapes of a text for five targets, the English word forms and a word search. The next three groups are the order of texts, the text of a thrown value and the removal of secrets. The last three are lengths with cuts and padding, marked parts and a scan of HTML.
+Plain text helpers in nine groups: the escapes of a text for six targets, the English word forms and a word search. The next three groups are the order of texts, the text of a thrown value and the removal of secrets. The last three are lengths with cuts and padding, marked parts and a scan of HTML.
 
 ```sh
 pnpm add @mark1russell7/text
@@ -14,9 +14,10 @@ pnpm add @mark1russell7/text
 | `escapeMarkdown` | One line of CommonMark or GitHub Markdown | A backslash before each ASCII punctuation character, and a space for each line end |
 | `escapeWorkflowData` | The data of a GitHub Actions workflow command | `%`, CR and LF, to `%25`, `%0D` and `%0A` |
 | `escapeWorkflowProperty` | A property value of a workflow command | The characters of `escapeWorkflowData`, and `:` and `,` to `%3A` and `%2C` |
+| `escapeShell` | One word of a POSIX shell command | No change for a text of safe characters. Each other text goes in single quotes, and each `'` becomes `'\''` |
 
 ```ts
-import { escapeAttribute, escapeHtml, escapeMarkdown, escapeRegExp, escapeWorkflowData, escapeWorkflowProperty } from "@mark1russell7/text";
+import { escapeAttribute, escapeHtml, escapeMarkdown, escapeRegExp, escapeShell, escapeWorkflowData, escapeWorkflowProperty } from "@mark1russell7/text";
 
 escapeHtml("a < b & c"); // "a &lt; b &amp; c"
 escapeAttribute(`say "hi"`); // "say &quot;hi&quot;"
@@ -24,6 +25,7 @@ new RegExp(`^${escapeRegExp("1+1=2?")}$`, "u").test("1+1=2?"); // true
 console.log(`::warning title=${escapeWorkflowProperty("a: b")}::${escapeWorkflowData("50%
 next")}`); // "::warning title=a%3A b::50%25%0Anext"
 escapeMarkdown("a | b *c*"); // "a \\| b \\*c\\*"
+`ls ${escapeShell("my file's name")}`; // "ls 'my file'\\''s name'"
 ```
 
 ## English word forms
@@ -320,6 +322,7 @@ The tests also examine 18 copies of a cut with a mark, from a later list of the 
 - `escapeHtml` does not escape quotes. For an attribute value, use `escapeAttribute`.
 - `escapeRegExp` gives a pattern for use outside a character class. In a class, `-` also has a meaning.
 - `escapeMarkdown` does not change spaces. Four spaces at the start of a line make a code block.
+- `escapeShell` gives one word for a POSIX shell, not for `cmd.exe` or PowerShell. It throws a `RangeError` for a text with NUL.
 - `wordSearch` keeps accents, so "cafe" does not find "café".
 - `countOf` knows no irregular plural. Give the plural noun for each noun that does not add "s".
 - `listOf` does not change the parts. A part with a comma makes a list that a reader cannot split again.
