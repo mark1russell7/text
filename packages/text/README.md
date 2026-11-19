@@ -26,6 +26,20 @@ next")}`); // "::warning title=a%3A b::50%25%0Anext"
 escapeMarkdown("a | b *c*"); // "a \\| b \\*c\\*"
 ```
 
+### One word of a POSIX shell
+
+`escapeShell(text)` gives one word that a POSIX shell reads as the text, with no expansion and no split into words. A text of safe characters only (letters, digits and `_ @ % + = : , . / -`) stays as it is. Each other text goes in single quotes, and each `'` becomes `'\''`. The empty text becomes `''`.
+
+The entry `@mark1russell7/text/shell` has `escapeShell`. The root entry does not have it, to keep its size.
+
+```ts
+import { escapeShell } from "@mark1russell7/text/shell";
+
+escapeShell("notes.txt"); // "notes.txt"
+escapeShell("my file's name"); // "'my file'\\''s name'"
+escapeShell("$HOME"); // "'$HOME'"
+```
+
 ## English word forms
 
 `countOf(count, noun, plural?)` gives a count with a noun. Only the count 1 takes the singular noun. The default plural noun is the singular noun with "s" at the end.
@@ -320,6 +334,7 @@ The tests also examine 18 copies of a cut with a mark, from a later list of the 
 - `escapeHtml` does not escape quotes. For an attribute value, use `escapeAttribute`.
 - `escapeRegExp` gives a pattern for use outside a character class. In a class, `-` also has a meaning.
 - `escapeMarkdown` does not change spaces. Four spaces at the start of a line make a code block.
+- `escapeShell` gives one word for a POSIX shell, not for `cmd.exe` or PowerShell. It throws a `RangeError` for a text with NUL.
 - `wordSearch` keeps accents, so "cafe" does not find "café".
 - `countOf` knows no irregular plural. Give the plural noun for each noun that does not add "s".
 - `listOf` does not change the parts. A part with a comma makes a list that a reader cannot split again.
