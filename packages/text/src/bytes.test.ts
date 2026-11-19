@@ -20,6 +20,9 @@ import { describe, expect, it } from "vitest";
 // table of the named character references to `./html`, with the prediction of 9000 bytes or fewer. The prediction failed:
 // the entry had 9425 bytes in CI. So the decoder went to the entry `./references`, and the limit of `./html` stays at
 // 1100 bytes. The limit of `./references` is 9000 bytes, predicted from that measure and before its first measure.
+// Version 0.0.17 first added `escapeShell` to the root entry. The root entry had 784 bytes in CI, more than its 700 bytes.
+// So `escapeShell` went to the entry `./shell`, and the root entry did not change. The limit of `./shell` is 250 bytes,
+// predicted before its first measure.
 const ENTRIES = [
   { entry: "root", file: "./index.ts", limit: 700 },
   { entry: "redact", file: "./redact.ts", limit: 2400 },
@@ -30,6 +33,7 @@ const ENTRIES = [
   { entry: "references", file: "./references.ts", limit: 9000 },
   { entry: "english", file: "./english.ts", limit: 300 },
   { entry: "search", file: "./search.ts", limit: 900 },
+  { entry: "shell", file: "./shell.ts", limit: 250 },
 ] as const;
 
 describe("the bytes of each entry", () => {

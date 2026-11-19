@@ -1,5 +1,18 @@
 # Changelog of @mark1russell7/text
 
+## 0.0.17
+
+PATCH: a new export before 1.0. The new entry `@mark1russell7/text/shell` has `escapeShell`. The root entry does not change.
+
+- `escapeShell(text)` gives one word that a POSIX shell reads as the text, with no expansion and no split into words.
+- A text of safe characters only stays as it is. Each other text goes in single quotes, and each `'` becomes `'\''`. The empty text becomes `''`.
+- A text with NUL gives a `RangeError`, because a shell word cannot hold NUL.
+- On Linux, the tests start `sh -c` with `printf` and compare the words that the shell read, on 26 hard cases and 1000 seeded strings.
+- The first version put `escapeShell` in the root entry. The root entry had 784 bytes in CI, more than its limit of 700 bytes. So `escapeShell` is in its own entry, `./shell`, with a limit of 250 bytes.
+- The first user is a generator of setup scripts for servers.
+
+Runtime dependencies: no change against `0.0.16` (none).
+
 ## 0.0.16
 
 PATCH: a new export before 1.0. The new entry `@mark1russell7/text/references` has `decodeReferences`. The root entry and the entry `./html` do not change.

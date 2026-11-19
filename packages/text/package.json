@@ -46,6 +46,7 @@
     "./references": "./src/references.ts",
     "./english": "./src/english.ts",
     "./search": "./src/search.ts",
+    "./shell": "./src/shell.ts",
     "./package.json": "./package.json"
   },
   "files": [
@@ -96,6 +97,10 @@
       "./search": {
         "types": "./build/search.d.ts",
         "default": "./build/search.js"
+      },
+      "./shell": {
+        "types": "./build/shell.d.ts",
+        "default": "./build/shell.js"
       },
       "./package.json": "./package.json"
     }

@@ -12,7 +12,6 @@ escapeAttribute: build/index.d.ts#escapeAttribute
 escapeHtml: build/index.d.ts#escapeHtml
 escapeMarkdown: build/index.d.ts#escapeMarkdown
 escapeRegExp: build/index.d.ts#escapeRegExp
-escapeShell: build/index.d.ts#escapeShell
 escapeWorkflowData: build/index.d.ts#escapeWorkflowData
 escapeWorkflowProperty: build/index.d.ts#escapeWorkflowProperty
 searchKey: build/search.d.ts#searchKey
@@ -87,6 +86,10 @@ searchWords: build/search.d.ts#searchWords
 termVector: build/search.d.ts#termVector
 wordSearch: build/search.d.ts#wordSearch
 
+## ./shell (build/shell.d.ts): names
+
+escapeShell: build/shell.d.ts#escapeShell
+
 ## Declarations
 
 ### build/english.d.ts#ListOptions
@@ -139,9 +142,6 @@ export declare function escapeMarkdown(text: string): string;
 
 ### build/index.d.ts#escapeRegExp
 export declare function escapeRegExp(text: string): string;
-
-### build/index.d.ts#escapeShell
-export declare function escapeShell(text: string): string;
 
 ### build/index.d.ts#escapeWorkflowData
 export declare function escapeWorkflowData(text: string): string;
@@ -296,3 +296,6 @@ export declare function termVector(words: readonly string[], idf: ReadonlyMap<st
 
 ### build/search.d.ts#wordSearch
 export declare function wordSearch(query: string): (text: string) => boolean;
+
+### build/shell.d.ts#escapeShell
+export declare function escapeShell(text: string): string;

@@ -8,6 +8,7 @@ import * as parts from "./parts.ts";
 import * as redact from "./redact.ts";
 import * as references from "./references.ts";
 import * as search from "./search.ts";
+import * as shell from "./shell.ts";
 
 describe("the entries", () => {
   it("export the names of the API report", () => {
@@ -38,6 +39,7 @@ describe("the entries", () => {
     expect(Object.keys(html).sort()).toEqual(["HTML_SKIP", "scanHtml"]);
     expect(Object.keys(references).sort()).toEqual(["decodeReferences"]);
     expect(Object.keys(english).sort()).toEqual(["countOf", "listOf"]);
+    expect(Object.keys(shell).sort()).toEqual(["escapeShell"]);
     expect(Object.keys(search).sort()).toEqual(["cosineSimilarity", "inverseDocumentFrequency", "rankDocuments", "rankerOf", "searchKey", "searchWords", "termVector", "wordSearch"]);
   });
 });
