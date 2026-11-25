@@ -1,5 +1,18 @@
 # Changelog of @mark1russell7/text
 
+## 0.0.19
+
+PATCH: a new export before 1.0. The new entry `@mark1russell7/text/print` has `createPrinter`. The root entry does not change.
+
+- `createPrinter({ out, err?, secrets? })` gives a printer of the output of a command-line tool: `line`, `table`, `status`, `warn`, `error` and `json`.
+- The streams are parameters, so the entry imports no `node:` module, and a test gives a buffer.
+- Before each write, the printer removes each known secret and each shape of a token.
+- A table measures each cell in graphemes, and a line has no spaces at its end.
+- The printer is for the output of a CLI. A diagnostic of a library or a service goes to a log record with its trace context, not to the printer.
+- The limit of `./print` is 3800 bytes, predicted before its first measure.
+
+Runtime dependencies: no change against `0.0.18` (none).
+
 ## 0.0.17
 
 PATCH: a new export before 1.0. The new entry `@mark1russell7/text/shell` has `escapeShell`. The root entry does not change.
