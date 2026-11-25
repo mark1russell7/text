@@ -72,6 +72,12 @@ ListOptions: build/english.d.ts#ListOptions
 countOf: build/english.d.ts#countOf
 listOf: build/english.d.ts#listOf
 
+## ./passage (build/passage.d.ts): names
+
+PassageSpan: build/passage.d.ts#PassageSpan
+findPassage: build/passage.d.ts#findPassage
+passageKey: build/passage.d.ts#passageKey
+
 ## ./search (build/search.d.ts): names
 
 DocumentScore: build/search.d.ts#DocumentScore
@@ -196,6 +202,18 @@ export declare function partsAt(text: string, ranges: readonly (readonly [start:
 
 ### build/parts.d.ts#partsOf
 export declare function partsOf(text: string, find: string): TextPart[];
+
+### build/passage.d.ts#PassageSpan
+export interface PassageSpan {
+  readonly start: number;
+  readonly end: number;
+}
+
+### build/passage.d.ts#findPassage
+export declare function findPassage(text: string, passage: string): PassageSpan | undefined;
+
+### build/passage.d.ts#passageKey
+export declare function passageKey(text: string): string;
 
 ### build/redact.d.ts#CONTEXT_SHAPES
 export declare const CONTEXT_SHAPES: readonly SecretShape[];

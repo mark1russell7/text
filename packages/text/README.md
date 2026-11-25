@@ -97,6 +97,23 @@ const corpus = ["The release gate", "The topic graph of the site", "A graph page
 rankDocuments(corpus, searchWords("topic graph")); // [{ index: 1, … }, { index: 2, … }, { index: 0, score: 0 }]
 ```
 
+### A passage in a text
+
+The entry `@mark1russell7/text/passage` finds a passage in a text, for example a quote in the text of its source. Since 0.0.18.
+
+- `passageKey(text)` gives the key of a text. It applies `searchKey` to each grapheme and removes the characters with no width.
+- The key changes each curly quote to a straight quote, each dash to a hyphen-minus, and each run of white space to one space.
+- `findPassage(text, passage)` gives the first span `{ start, end }` of the passage in the text, or `undefined`.
+- The span is in the text, not in the key. Thus `text.slice(start, end)` gives the words of the source.
+- Accents and punctuation stay. A hyphen at the end of a line stays, because it can be a real hyphen.
+
+```ts
+import { findPassage } from "@mark1russell7/text/passage";
+
+const text = "Water boils at lower\ntemperatures as altitude increases.";
+findPassage(text, "water boils at lower temperatures"); // { start: 0, end: 33 }
+```
+
 ## The order of texts
 
 The entry `@mark1russell7/text/order` has two orders of texts. Each order is the same in each locale and in each copy of a program. The name of each function tells its unit.
