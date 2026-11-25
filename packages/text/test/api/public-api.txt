@@ -76,9 +76,12 @@ listOf: build/english.d.ts#listOf
 
 DocumentScore: build/search.d.ts#DocumentScore
 IdfForm: build/search.d.ts#IdfForm
+PassageSpan: build/search.d.ts#PassageSpan
 WordOptions: build/search.d.ts#WordOptions
 cosineSimilarity: build/search.d.ts#cosineSimilarity
+findPassage: build/search.d.ts#findPassage
 inverseDocumentFrequency: build/search.d.ts#inverseDocumentFrequency
+passageKey: build/search.d.ts#passageKey
 rankDocuments: build/search.d.ts#rankDocuments
 rankerOf: build/search.d.ts#rankerOf
 searchKey: build/search.d.ts#searchKey
@@ -266,6 +269,12 @@ export interface DocumentScore {
 ### build/search.d.ts#IdfForm
 export type IdfForm = "plain" | "smooth";
 
+### build/search.d.ts#PassageSpan
+export interface PassageSpan {
+  readonly start: number;
+  readonly end: number;
+}
+
 ### build/search.d.ts#WordOptions
 export interface WordOptions {
   readonly stop?: ReadonlySet<string>;
@@ -276,8 +285,14 @@ export interface WordOptions {
 ### build/search.d.ts#cosineSimilarity
 export declare function cosineSimilarity(a: ReadonlyMap<string, number>, b: ReadonlyMap<string, number>): number;
 
+### build/search.d.ts#findPassage
+export declare function findPassage(text: string, passage: string): PassageSpan | undefined;
+
 ### build/search.d.ts#inverseDocumentFrequency
 export declare function inverseDocumentFrequency(documents: readonly (readonly string[])[], form?: IdfForm): Map<string, number>;
+
+### build/search.d.ts#passageKey
+export declare function passageKey(text: string): string;
 
 ### build/search.d.ts#rankDocuments
 export declare function rankDocuments(corpus: readonly (readonly string[])[], query: readonly string[], form?: IdfForm): DocumentScore[];
