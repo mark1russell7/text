@@ -96,6 +96,16 @@ wordSearch: build/search.d.ts#wordSearch
 
 escapeShell: build/shell.d.ts#escapeShell
 
+## ./print (build/print.d.ts): names
+
+ColumnAlign: build/print.d.ts#ColumnAlign
+Printer: build/print.d.ts#Printer
+PrinterOptions: build/print.d.ts#PrinterOptions
+StatusState: build/print.d.ts#StatusState
+TableOptions: build/print.d.ts#TableOptions
+TextSink: build/print.d.ts#TextSink
+createPrinter: build/print.d.ts#createPrinter
+
 ## Declarations
 
 ### build/english.d.ts#ListOptions
@@ -214,6 +224,44 @@ export declare function findPassage(text: string, passage: string): PassageSpan 
 
 ### build/passage.d.ts#passageKey
 export declare function passageKey(text: string): string;
+
+### build/print.d.ts#ColumnAlign
+export type ColumnAlign = "start" | "end";
+
+### build/print.d.ts#Printer
+export interface Printer {
+  line(text?: string): void;
+  table(rows: readonly (readonly unknown[])[], options?: TableOptions): void;
+  status(state: StatusState, text: string): void;
+  warn(text: string): void;
+  error(error: unknown, context?: string): void;
+  json(value: unknown): void;
+}
+
+### build/print.d.ts#PrinterOptions
+export interface PrinterOptions {
+  readonly out: TextSink;
+  readonly err?: TextSink;
+  readonly secrets?: readonly Secret[];
+}
+
+### build/print.d.ts#StatusState
+export type StatusState = "ok" | "fail" | "warn" | "info";
+
+### build/print.d.ts#TableOptions
+export interface TableOptions {
+  readonly head?: readonly string[];
+  readonly align?: readonly ColumnAlign[];
+  readonly gap?: string;
+}
+
+### build/print.d.ts#TextSink
+export interface TextSink {
+  write(text: string): unknown;
+}
+
+### build/print.d.ts#createPrinter
+export declare function createPrinter(options: PrinterOptions): Printer;
 
 ### build/redact.d.ts#CONTEXT_SHAPES
 export declare const CONTEXT_SHAPES: readonly SecretShape[];

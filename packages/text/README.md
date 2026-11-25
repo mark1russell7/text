@@ -40,6 +40,29 @@ escapeShell("my file's name"); // "'my file'\\''s name'"
 escapeShell("$HOME"); // "'$HOME'"
 ```
 
+## The output of a command-line tool
+
+`createPrinter({ out, err?, secrets? })` gives a printer of the output of a command-line tool, for a person. `out` and `err` are streams with `write(text)`, for example `process.stdout` and `process.stderr`. The default of `err` is `out`. The entry imports no `node:` module, so a test can give a buffer in place of a stream.
+
+- `line(text?)` writes a line to `out`.
+- `table(rows, { head?, align?, gap? })` writes a table to `out`. It measures each cell in graphemes, and a line has no spaces at its end. The align `end` puts a column at the right, for numbers.
+- `status(state, text)` writes `OK`, `INFO`, `WARN` or `FAIL` and the text. The state `fail` goes to `err`, and the other states go to `out`.
+- `warn(text)` writes `warning: ` and the text to `err`.
+- `error(thrown, context?)` writes the text of a thrown value (`errorMessage`) to `err`. A context comes before the text. It does not throw.
+- `json(value)` writes the value as JSON with two spaces, to `out`.
+
+Before each write, the printer puts `[secret]` in place of each known secret of `secrets` (`redactSecrets`) and each shape of a token (`redactSecretShapes`).
+
+```ts
+import { createPrinter } from "@mark1russell7/text/print";
+
+const print = createPrinter({ out: process.stdout, err: process.stderr });
+print.table([["alerts", 82], ["fleet", 121]], { head: ["repository", "calls"], align: ["start", "end"] });
+print.status("fail", "test: 2 errors");
+```
+
+The printer is for output that a person reads. A diagnostic of a library or a service (a warning, a debug line, a caught error) is not output. Send it to a log record with its trace context, through the logger of OpenTelemetry.
+
 ## English word forms
 
 `countOf(count, noun, plural?)` gives a count with a noun. Only the count 1 takes the singular noun. The default plural noun is the singular noun with "s" at the end.
@@ -354,6 +377,7 @@ The tests also examine 18 copies of a cut with a mark, from a later list of the 
 - `escapeShell` gives one word for a POSIX shell, not for `cmd.exe` or PowerShell. It throws a `RangeError` for a text with NUL.
 - `wordSearch` keeps accents, so "cafe" does not find "café".
 - `countOf` knows no irregular plural. Give the plural noun for each noun that does not add "s".
+- `createPrinter` does not color the output and does not wrap a long line.
 - `listOf` does not change the parts. A part with a comma makes a list that a reader cannot split again.
 - `errorMessage` gives only the message. It does not add the name of the error, its `cause` or its stack.
 - `redactSecrets` removes only the forms in its table. A secret in a JSON string with escapes, or in a different encoding, stays.
