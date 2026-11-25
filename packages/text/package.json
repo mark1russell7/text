@@ -45,6 +45,7 @@
     "./html": "./src/html.ts",
     "./references": "./src/references.ts",
     "./english": "./src/english.ts",
+    "./passage": "./src/passage.ts",
     "./search": "./src/search.ts",
     "./shell": "./src/shell.ts",
     "./package.json": "./package.json"
@@ -93,6 +94,10 @@
       "./english": {
         "types": "./build/english.d.ts",
         "default": "./build/english.js"
+      },
+      "./passage": {
+        "types": "./build/passage.d.ts",
+        "default": "./build/passage.js"
       },
       "./search": {
         "types": "./build/search.d.ts",

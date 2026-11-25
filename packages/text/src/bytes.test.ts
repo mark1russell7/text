@@ -22,7 +22,9 @@ import { describe, expect, it } from "vitest";
 // 1100 bytes. The limit of `./references` is 9000 bytes, predicted from that measure and before its first measure.
 // Version 0.0.17 first added `escapeShell` to the root entry. The root entry had 784 bytes in CI, more than its 700 bytes.
 // So `escapeShell` went to the entry `./shell`, and the root entry did not change. The limit of `./shell` is 250 bytes,
-// predicted before its first measure.
+// predicted before its first measure. Version 0.0.18 first added the passage search to `./search`. The entry had 1128
+// bytes in CI, more than its 900 bytes. So the passage search went to the entry `./passage`, and `./search` did not change.
+// The limit of `./passage` is 600 bytes, predicted before its first measure.
 const ENTRIES = [
   { entry: "root", file: "./index.ts", limit: 700 },
   { entry: "redact", file: "./redact.ts", limit: 2400 },
@@ -33,6 +35,7 @@ const ENTRIES = [
   { entry: "references", file: "./references.ts", limit: 9000 },
   { entry: "english", file: "./english.ts", limit: 300 },
   { entry: "search", file: "./search.ts", limit: 900 },
+  { entry: "passage", file: "./passage.ts", limit: 600 },
   { entry: "shell", file: "./shell.ts", limit: 250 },
 ] as const;
 

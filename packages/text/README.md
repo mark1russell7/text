@@ -99,7 +99,7 @@ rankDocuments(corpus, searchWords("topic graph")); // [{ index: 1, … }, { inde
 
 ### A passage in a text
 
-The entry `@mark1russell7/text/search` also finds a passage in a text, for example a quote in the text of its source. Since 0.0.18.
+The entry `@mark1russell7/text/passage` finds a passage in a text, for example a quote in the text of its source. Since 0.0.18.
 
 - `passageKey(text)` gives the key of a text. It applies `searchKey` to each grapheme and removes the characters with no width.
 - The key changes each curly quote to a straight quote, each dash to a hyphen-minus, and each run of white space to one space.
@@ -108,7 +108,7 @@ The entry `@mark1russell7/text/search` also finds a passage in a text, for examp
 - Accents and punctuation stay. A hyphen at the end of a line stays, because it can be a real hyphen.
 
 ```ts
-import { findPassage } from "@mark1russell7/text/search";
+import { findPassage } from "@mark1russell7/text/passage";
 
 const text = "Water boils at lower\ntemperatures as altitude increases.";
 findPassage(text, "water boils at lower temperatures"); // { start: 0, end: 33 }
