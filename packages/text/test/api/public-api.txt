@@ -66,6 +66,10 @@ scanHtml: build/html.d.ts#scanHtml
 
 decodeReferences: build/references.d.ts#decodeReferences
 
+## ./plain-text (build/plain-text.d.ts): names
+
+plainText: build/plain-text.d.ts#plainText
+
 ## ./english (build/english.d.ts): names
 
 ListOptions: build/english.d.ts#ListOptions
@@ -224,6 +228,9 @@ export declare function findPassage(text: string, passage: string): PassageSpan 
 
 ### build/passage.d.ts#passageKey
 export declare function passageKey(text: string): string;
+
+### build/plain-text.d.ts#plainText
+export declare function plainText(html: string | undefined): string | undefined;
 
 ### build/print.d.ts#ColumnAlign
 export type ColumnAlign = "start" | "end";

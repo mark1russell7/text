@@ -363,6 +363,22 @@ decodeReferences(scanHtml("<p>Fish &amp; chips</p>").text); // " Fish & chips "
 
 The table comes from `entities.json` of the standard, under the license CC BY 4.0. The script `scripts/html-references.ts` makes the module `src/html-references.ts` from it. The table is in the entry `./references`. Thus a bundle that imports only `scanHtml` does not get the table.
 
+### The plain text of HTML
+
+`plainText(html)` of the entry `@mark1russell7/text/plain-text` gives the plain text of a part of HTML, for a summary or a pattern.
+
+- It is `scanHtml`, then `decodeReferences`. Each run of white space becomes one space, and the ends have no space.
+- `undefined`, and a text with no characters after these steps, give `undefined`.
+- Each tag gives one space, as in `scanHtml`. Thus `<b>3</b>,` gives `3 ,`.
+- A reference to `<` gives text, not a tag. The result is not safe HTML: escape it before a page shows it.
+
+```ts
+import { plainText } from "@mark1russell7/text/plain-text";
+
+plainText("<p>Fish &amp; chips</p>\n<p>at 10:00</p>"); // "Fish & chips at 10:00"
+plainText("<p> </p>"); // undefined
+```
+
 ## The copies that this package replaces
 
 The tests run 58 copies of these functions from other repositories of the owner. Each copy comes from a list of the duplication atlas, at a pinned commit. The file `test/copies.json` has each copy, and `test/differences.ts` has each difference from the function of this package, with its reason. A copy that is not in the list gives the same output on each of the 1000 test strings.

@@ -26,7 +26,9 @@ import { describe, expect, it } from "vitest";
 // bytes in CI, more than its 900 bytes. So the passage search went to the entry `./passage`, and `./search` did not change.
 // The limit of `./passage` is 600 bytes, predicted before its first measure. Version 0.0.19 adds the entry `./print`. It
 // bundles the shapes of `./redact`, the padding of `./length` and `errorMessage`. Its limit is 3800 bytes, predicted before
-// its first measure.
+// its first measure. Version 0.0.20 first added `plainText` to `./references`. The entry had 9456 bytes in CI, more than its
+// 9000 bytes, because it then bundled `scanHtml`. So `plainText` went to the entry `./plain-text`, and `./references` did not
+// change. The limit of `./plain-text` is 9600 bytes, predicted from that measure and before its first measure.
 const ENTRIES = [
   { entry: "root", file: "./index.ts", limit: 700 },
   { entry: "redact", file: "./redact.ts", limit: 2400 },
@@ -35,6 +37,7 @@ const ENTRIES = [
   { entry: "order", file: "./order.ts", limit: 400 },
   { entry: "html", file: "./html.ts", limit: 1100 },
   { entry: "references", file: "./references.ts", limit: 9000 },
+  { entry: "plain-text", file: "./plain-text.ts", limit: 9600 },
   { entry: "english", file: "./english.ts", limit: 300 },
   { entry: "search", file: "./search.ts", limit: 900 },
   { entry: "passage", file: "./passage.ts", limit: 600 },

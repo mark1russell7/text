@@ -6,6 +6,7 @@ import * as length from "./length.ts";
 import * as order from "./order.ts";
 import * as parts from "./parts.ts";
 import * as passage from "./passage.ts";
+import * as plain from "./plain-text.ts";
 import * as print from "./print.ts";
 import * as redact from "./redact.ts";
 import * as references from "./references.ts";
@@ -40,6 +41,7 @@ describe("the entries", () => {
     expect(Object.keys(order).sort()).toEqual(["compareCodePoints", "compareCodeUnits"]);
     expect(Object.keys(html).sort()).toEqual(["HTML_SKIP", "scanHtml"]);
     expect(Object.keys(references).sort()).toEqual(["decodeReferences"]);
+    expect(Object.keys(plain).sort()).toEqual(["plainText"]);
     expect(Object.keys(english).sort()).toEqual(["countOf", "listOf"]);
     expect(Object.keys(shell).sort()).toEqual(["escapeShell"]);
     expect(Object.keys(print).sort()).toEqual(["createPrinter"]);

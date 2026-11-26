@@ -1,8 +1,8 @@
 {
   "$schema": "https://json.schemastore.org/package",
   "name": "@mark1russell7/text",
-  "version": "0.0.19",
-  "description": "Plain text helpers: the escapes for HTML, attributes, patterns, Markdown and workflow commands, English word forms (countOf, listOf), a word search (wordSearch), the text of a thrown value (errorMessage), the orders of texts by code units and by code points (compareCodeUnits, compareCodePoints), the removal of secrets (redactSecrets) and the shapes of tokens and of secrets by their context (findSecretShapes, redactSecretShapes, findSecretShapesInValue, CONTEXT_SHAPES, isSecretName), and lengths in code units, code points and graphemes with truncation and padding (textLength, truncate, pad), the marked parts of a text (partsAt, partsOf), a scan of HTML for its text and its start tags (scanHtml) with the decode of its character references (decodeReferences), and a printer of lines and tables to streams that the caller gives (createPrinter).",
+  "version": "0.0.20",
+  "description": "Plain text helpers: the escapes for HTML, attributes, patterns, Markdown and workflow commands, English word forms (countOf, listOf), a word search (wordSearch), the text of a thrown value (errorMessage), the orders of texts by code units and by code points (compareCodeUnits, compareCodePoints), the removal of secrets (redactSecrets) and the shapes of tokens and of secrets by their context (findSecretShapes, redactSecretShapes, findSecretShapesInValue, CONTEXT_SHAPES, isSecretName), and lengths in code units, code points and graphemes with truncation and padding (textLength, truncate, pad), the marked parts of a text (partsAt, partsOf), a scan of HTML for its text and its start tags (scanHtml) with the decode of its character references (decodeReferences) and its plain text (plainText), and a printer of lines and tables to streams that the caller gives (createPrinter).",
   "keywords": [
     "text",
     "escape",
@@ -47,6 +47,7 @@
     "./order": "./src/order.ts",
     "./html": "./src/html.ts",
     "./references": "./src/references.ts",
+    "./plain-text": "./src/plain-text.ts",
     "./english": "./src/english.ts",
     "./passage": "./src/passage.ts",
     "./search": "./src/search.ts",
@@ -94,6 +95,10 @@
       "./references": {
         "types": "./build/references.d.ts",
         "default": "./build/references.js"
+      },
+      "./plain-text": {
+        "types": "./build/plain-text.d.ts",
+        "default": "./build/plain-text.js"
       },
       "./english": {
         "types": "./build/english.d.ts",
