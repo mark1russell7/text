@@ -2,12 +2,13 @@
 
 ## 0.0.20
 
-PATCH: a new export before 1.0. The entry `@mark1russell7/text/references` has `plainText`. The root entry does not change.
+PATCH: a new entry and a new export before 1.0. The new entry `@mark1russell7/text/plain-text` has `plainText`. The other entries do not change.
 
 - `plainText(html)` gives the plain text of a part of HTML: `scanHtml`, then `decodeReferences`, with one space for each run of white space.
 - `undefined`, and a text with no characters, give `undefined`.
 - Three source adapters of alerts had a copy of it. They import it after this release.
-- The function is in `./references`, not in `./html`. Thus `./html` does not get the table of the named references.
+- Each tag gives one space, as in `scanHtml`. Thus `<b>3</b>,` gives `3 ,`.
+- The function has its own entry. In `./references` it bundled `scanHtml`: 9456 bytes, more than the 9000 bytes of that entry. Thus `./html` and `./references` do not change.
 
 Runtime dependencies: no change against `0.0.19` (none).
 

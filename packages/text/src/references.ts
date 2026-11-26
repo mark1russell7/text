@@ -3,7 +3,6 @@
  * 2231 names. It is in a separate entry, so a bundle that only scans HTML does not get the table.
  */
 import { NAMED_REFERENCES } from "./html-references.ts";
-import { scanHtml } from "./html.ts";
 
 /**
  * The values of the code points 0x80 to 0x9F in a numeric character reference, from the table of the standard. They are
@@ -138,23 +137,4 @@ export function decodeReferences(text: string): string {
   }
   parts.push(text.slice(at));
   return parts.join("");
-}
-
-/**
- * This function gives the plain text of a part of HTML, for a summary or a pattern. It is `scanHtml`, then `decodeReferences`.
- *
- * - The scan removes the tags, and it skips scripts, styles and templates.
- * - Each character reference gives its value. A reference to `<` gives text, not a tag.
- * - Each run of white space becomes one space, and the text has no space at its start or its end.
- * - `undefined`, and a text that is empty after these steps, give `undefined`.
- *
- * The function does not throw, and it is linear in the length of the HTML. The result is not safe HTML: escape it before a page shows it.
- *
- * @param html - The HTML, or `undefined` for a field that is not there.
- * @returns The plain text, or `undefined` when it is empty.
- */
-export function plainText(html: string | undefined): string | undefined {
-  if (html === undefined) return undefined;
-  const text = decodeReferences(scanHtml(html).text).replace(/\s+/g, " ").trim();
-  return text === "" ? undefined : text;
 }
