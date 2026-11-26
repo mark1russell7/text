@@ -155,6 +155,6 @@ export function decodeReferences(text: string): string {
  */
 export function plainText(html: string | undefined): string | undefined {
   if (html === undefined) return undefined;
-  const text = decodeReferences(scanHtml(html).text).replace(/s+/g, " ").trim();
+  const text = decodeReferences(scanHtml(html).text).replace(/\s+/g, " ").trim();
   return text === "" ? undefined : text;
 }

@@ -374,8 +374,7 @@ The table comes from `entities.json` of the standard, under the license CC BY 4.
 ```ts
 import { plainText } from "@mark1russell7/text/references";
 
-plainText("<p>Fish &amp; chips</p>
-<p>at 10:00</p>"); // "Fish & chips at 10:00"
+plainText("<p>Fish &amp; chips</p>\n<p>at 10:00</p>"); // "Fish & chips at 10:00"
 plainText("<p> </p>"); // undefined
 ```
 
