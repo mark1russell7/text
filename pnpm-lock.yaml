@@ -183,7 +183,7 @@ importers:
         version: 0.3.2(@swc/core@1.16.22)(dependency-cruiser@18.8.0)
       '@mark1russell7/conventions':
         specifier: ^0.54.0
-        version: 0.54.0
+        version: 0.54.1
       '@mark1russell7/cue':
         specifier: ^2.0.0
         version: 2.1.4
@@ -247,7 +247,7 @@ importers:
         version: 2.1.4
       '@mark1russell7/rigor-generators':
         specifier: ^0.2.0
-        version: 0.2.6
+        version: 0.2.7
       '@types/node':
         specifier: ^26.6.5
         version: 26.6.6
@@ -490,8 +490,8 @@ packages:
       dependency-cruiser:
         optional: true
 
-  '@mark1russell7/conventions@0.54.0':
-    resolution: {integrity: sha512-pqdCwKE5ejF5Bf0pYvpbykFpzW8zgBh3MCRmpiOzuXgIYCnoEPAHmPFB316BohXS9HMV6o5OJsjfXJPq+gR+Vw==}
+  '@mark1russell7/conventions@0.54.1':
+    resolution: {integrity: sha512-E0yy1BWw6wM2Y2L2MysbgId+C2v1ACFMCvm3nXch1PUqYbWXkDrca9kN5OlBhMfohvsHyHgW2tZYI+KZxPMWBw==}
     engines: {node: '>=22'}
     hasBin: true
 
@@ -508,8 +508,8 @@ packages:
     resolution: {integrity: sha512-z5Ia9gDuS/I9pV/4rOoRx3o2DAhW2VE2UYoqIlHo88pmLPX7SWJcympg2N+QS9sSA6Dn0vTPcicxeDX6oXzAGw==}
     engines: {node: '>=22'}
 
-  '@mark1russell7/rigor-generators@0.2.6':
-    resolution: {integrity: sha512-twMYvM//nGt/oumhZ2uFiXpC+ve59B1Zl8hinUnAaru4Vy5MiybhKggrESyDhvc519dWIGTbwWd000hsLkhVsA==}
+  '@mark1russell7/rigor-generators@0.2.7':
+    resolution: {integrity: sha512-7UwfykXyUqZBHZPNf/tHI2ExwsCTZLPmTqdl1FdmilkmWptdNy30PU8QEeF0u/LQ0W4OUv78r2rAS+PtQJOBug==}
     engines: {node: '>=22'}
 
   '@mark1russell7/rigor-statistics@0.2.7':
@@ -1782,14 +1782,14 @@ snapshots:
 
   '@mark1russell7/api-report@0.5.22':
     dependencies:
-      '@mark1russell7/conventions': 0.54.0
+      '@mark1russell7/conventions': 0.54.1
 
   '@mark1russell7/boundaries@0.3.2(@swc/core@1.16.22)(dependency-cruiser@18.8.0)':
     optionalDependencies:
       '@swc/core': 1.16.22
       dependency-cruiser: 18.8.0
 
-  '@mark1russell7/conventions@0.54.0':
+  '@mark1russell7/conventions@0.54.1':
     dependencies:
       '@mark1russell7/text': 0.0.20
       yaml: 2.9.1
@@ -1800,7 +1800,7 @@ snapshots:
 
   '@mark1russell7/rigor-generators@0.1.18': {}
 
-  '@mark1russell7/rigor-generators@0.2.6': {}
+  '@mark1russell7/rigor-generators@0.2.7': {}
 
   '@mark1russell7/rigor-statistics@0.2.7':
     dependencies:
