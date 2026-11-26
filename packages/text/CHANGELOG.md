@@ -1,5 +1,16 @@
 # Changelog of @mark1russell7/text
 
+## 0.0.20
+
+PATCH: a new export before 1.0. The entry `@mark1russell7/text/references` has `plainText`. The root entry does not change.
+
+- `plainText(html)` gives the plain text of a part of HTML: `scanHtml`, then `decodeReferences`, with one space for each run of white space.
+- `undefined`, and a text with no characters, give `undefined`.
+- Three source adapters of alerts had a copy of it. They import it after this release.
+- The function is in `./references`, not in `./html`. Thus `./html` does not get the table of the named references.
+
+Runtime dependencies: no change against `0.0.19` (none).
+
 ## 0.0.19
 
 PATCH: a new export before 1.0. The new entry `@mark1russell7/text/print` has `createPrinter`. The root entry does not change.

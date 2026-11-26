@@ -65,6 +65,7 @@ scanHtml: build/html.d.ts#scanHtml
 ## ./references (build/references.d.ts): names
 
 decodeReferences: build/references.d.ts#decodeReferences
+plainText: build/references.d.ts#plainText
 
 ## ./english (build/english.d.ts): names
 
@@ -322,6 +323,9 @@ export declare function redactSecrets(text: string, secrets: readonly Secret[], 
 
 ### build/references.d.ts#decodeReferences
 export declare function decodeReferences(text: string): string;
+
+### build/references.d.ts#plainText
+export declare function plainText(html: string | undefined): string | undefined;
 
 ### build/search.d.ts#DocumentScore
 export interface DocumentScore {
