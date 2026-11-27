@@ -1,5 +1,9 @@
 # Changelog of @mark1russell7/text
 
+## 0.0.21
+
+An automated dependency update changes the shipped files, so this PATCH ships them.
+
 ## 0.0.20
 
 PATCH: a new entry and a new export before 1.0. The new entry `@mark1russell7/text/plain-text` has `plainText`. The other entries do not change.
